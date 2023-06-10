@@ -12,9 +12,11 @@
     "authenticator": "^1.1.5",
     "dotenv": "^16.1.4",
     "framer-motion": "^6.5.1",
+    "html5-qrcode": "^2.3.8",
     "react": "^18.2.0",
     "react-countdown-circle-timer": "^3.2.1",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.44.3",
     "react-icons": "^3.11.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"

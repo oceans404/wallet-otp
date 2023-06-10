@@ -7,7 +7,7 @@ import {
   theme,
   Text,
   Container,
-  Button,
+  HStack,
 } from '@chakra-ui/react';
 
 import ServiceCard from './ServiceCard';
@@ -38,9 +38,16 @@ function App() {
     },
   ]);
 
-  const encryptAndSaveSecret = () => {
+  const encryptAndSaveSecret = secretData => {
     // todo: encrypt and post to Polybase
-    console.log('saved');
+    console.log(secretData);
+    setCards(cards => [
+      {
+        name: `${secretData.Service}: ${secretData.Account}`,
+        secret: secretData.Secret,
+      },
+      ...cards,
+    ]);
   };
 
   return (
@@ -49,15 +56,18 @@ function App() {
         <Grid minH="100vh" p={3}>
           <VStack spacing={8}>
             <Container>
-              <Text
-                bgGradient="linear(to-l, #7928CA, #FF0080)"
-                bgClip="text"
-                fontSize="6xl"
-                fontWeight="extrabold"
-              >
-                My OTPs
-              </Text>
-              <AddSecret saveSecret={encryptAndSaveSecret} />
+              <HStack justifyContent={'space-between'}>
+                <Text
+                  bgGradient="linear(to-l, #7928CA, #FF0080)"
+                  bgClip="text"
+                  fontSize="6xl"
+                  fontWeight="extrabold"
+                >
+                  My OTPs
+                </Text>
+                <AddSecret saveSecret={encryptAndSaveSecret} />
+              </HStack>
+
               {cards.map(c => (
                 <ServiceCard key={c.name} name={c.name} secret={c.secret} />
               ))}
