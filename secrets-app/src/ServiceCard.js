@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 function ServiceCard({ name, secret }) {
   const [timerRefresh, setTimerRefresh] = useState(0);
   const [code, setCode] = useState('******');
+  // starting duration offset from current time (new code at 0/60 and 30 seconds)
   const [duration, setDuration] = useState(
     new Date().getSeconds() > 30
       ? 60 - new Date().getSeconds()
@@ -33,7 +34,7 @@ function ServiceCard({ name, secret }) {
   const spaceOutCode = num => `${num.slice(0, 3)} ${num.slice(3)}`;
 
   return (
-    <Card width={'50%'}>
+    <Card width={'100%'} my={4}>
       <Box height={0}>
         <svg>
           <defs>
@@ -49,8 +50,6 @@ function ServiceCard({ name, secret }) {
         <Center marginTop={5}>
           <CountdownCircleTimer
             key={timerRefresh}
-            // colors="linear(to-l, #7928CA, #FF0080)"
-            // colorsTime={[7, 5, 2, 0]}
             colors="url(#your-unique-id)"
             isPlaying
             duration={duration}
