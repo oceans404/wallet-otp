@@ -11,12 +11,12 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-import { Web3Button } from '@web3modal/react';
-import { useAccount } from 'wagmi';
+import { useAccount, useDisconnect } from 'wagmi';
 
 import ServiceCard from './ServiceCard';
 import AddSecret from './AddSecret';
 import './App.css';
+import LandingPage from './LandingPage';
 
 const config = {
   initialColorMode: 'dark',
@@ -25,6 +25,7 @@ const config = {
 
 function App() {
   const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
   // todo: add signed in with ENS ui
 
   // check if wallet is part of data dao
@@ -40,7 +41,7 @@ function App() {
       secret: 'j22h ni4e cd4o hqrx fka7 7uye wf2d xh77',
     },
     {
-      name: 'Instagram: @steph',
+      name: 'Instagram: @steph.test',
       secret: 'tcwb oqj3 f3p3 5lca iarf dpqv rhc6 5iwt',
     },
     {
@@ -67,25 +68,25 @@ function App() {
         <Grid minH="100vh" p={3}>
           <VStack spacing={8}>
             <Container>
-              <HStack justifyContent={'space-between'}>
-                <Text
-                  bgGradient="linear(to-l, #7928CA, #FF0080)"
-                  bgClip="text"
-                  fontSize="4xl"
-                  fontWeight="bold"
-                >
-                  My OTPs
-                </Text>
-                <div>
-                  {isConnected && address && (
+              {isConnected && address && (
+                <HStack justifyContent={'space-between'}>
+                  <Text
+                    bgGradient="linear(to-l, #7928CA, #FF0080)"
+                    bgClip="text"
+                    fontSize="4xl"
+                    fontWeight="bold"
+                  >
+                    My OTPs
+                  </Text>
+                  <div>
                     <AddSecret saveSecret={encryptAndSaveSecret} />
-                  )}
-                  <Button padding={'0'} marginLeft={2}>
-                    <Web3Button icon="hide" />
-                  </Button>
-                </div>
-              </HStack>
-
+                    <Button marginLeft={2} onClick={() => disconnect()}>
+                      Log out
+                    </Button>
+                  </div>
+                </HStack>
+              )}
+              {!isConnected && <LandingPage />}
               {cards.map(c => (
                 <ServiceCard key={c.name} name={c.name} secret={c.secret} />
               ))}

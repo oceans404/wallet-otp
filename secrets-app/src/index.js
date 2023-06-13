@@ -41,9 +41,10 @@ root.render(
       ethereumClient={ethereumClient}
       themeVariables={{
         '--w3m-font-family': 'Roboto, sans-serif',
-        '--w3m-accent-color': 'inherit',
-        '--w3m-button-hover-highlight-border-radius': 'inherit',
-        '--w3m-button-border-radius': 'inherit',
+        '--w3m-background-color': '#7928CA',
+        '--w3m-accent-color': '#7928CA',
+        '--w3m-button-hover-highlight-border-radius': '6px',
+        '--w3m-button-border-radius': '6px',
       }}
     />
   </>

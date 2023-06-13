@@ -28,7 +28,7 @@ function AddSecret({ saveSecret }) {
 
   return (
     <>
-      <Button onClick={onOpen}>
+      <Button onClick={onOpen} background={'#7928CA'}>
         <AddIcon marginRight={2} /> {title}
       </Button>
 
