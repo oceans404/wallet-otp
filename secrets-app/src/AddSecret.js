@@ -24,16 +24,18 @@ function AddSecret({ saveSecret }) {
     reset();
   };
 
+  const title = 'Add 2FA secret';
+
   return (
     <>
       <Button onClick={onOpen}>
-        <AddIcon marginRight={2} /> Add Secret
+        <AddIcon marginRight={2} /> {title}
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Add secret</ModalHeader>
+          <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
@@ -55,7 +57,7 @@ function AddSecret({ saveSecret }) {
               />
               <Input
                 type="text"
-                placeholder="Secret key"
+                placeholder="2FA secret key"
                 {...register('Secret', {
                   required: true,
                   minLength: 32,

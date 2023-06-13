@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 
 import { Web3Button } from '@web3modal/react';
+import { useAccount } from 'wagmi';
 
 import ServiceCard from './ServiceCard';
 import AddSecret from './AddSecret';
@@ -23,7 +24,8 @@ const config = {
 };
 
 function App() {
-  // todo: implement wallet auth, sign in with ENS
+  const { address, isConnected } = useAccount();
+  // todo: add signed in with ENS ui
 
   // check if wallet is part of data dao
 
@@ -75,7 +77,9 @@ function App() {
                   My OTPs
                 </Text>
                 <div>
-                  <AddSecret saveSecret={encryptAndSaveSecret} />
+                  {isConnected && address && (
+                    <AddSecret saveSecret={encryptAndSaveSecret} />
+                  )}
                   <Button padding={'0'} marginLeft={2}>
                     <Web3Button icon="hide" />
                   </Button>
