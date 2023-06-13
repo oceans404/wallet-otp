@@ -10,6 +10,7 @@ import {
   HStack,
   Button,
 } from '@chakra-ui/react';
+
 import { Web3Button } from '@web3modal/react';
 
 import ServiceCard from './ServiceCard';
@@ -69,14 +70,14 @@ function App() {
                   bgGradient="linear(to-l, #7928CA, #FF0080)"
                   bgClip="text"
                   fontSize="4xl"
-                  fontWeight="extrabold"
+                  fontWeight="bold"
                 >
                   My OTPs
                 </Text>
                 <div>
                   <AddSecret saveSecret={encryptAndSaveSecret} />
                   <Button padding={'0'} marginLeft={2}>
-                    <Web3Button />
+                    <Web3Button icon="hide" />
                   </Button>
                 </div>
               </HStack>

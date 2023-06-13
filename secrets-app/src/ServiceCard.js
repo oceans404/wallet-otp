@@ -1,7 +1,17 @@
-import { Card, CardBody, Center, Box } from '@chakra-ui/react';
+import {
+  Card,
+  CardBody,
+  Center,
+  Box,
+  CardFooter,
+  Button,
+} from '@chakra-ui/react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { CopyIcon } from '@chakra-ui/icons';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import * as authenticator from 'authenticator';
 import { useState, useEffect } from 'react';
+import SecretPopover from './SecretPopover';
 
 function ServiceCard({ name, secret }) {
   const [timerRefresh, setTimerRefresh] = useState(0);
@@ -59,6 +69,14 @@ function ServiceCard({ name, secret }) {
           </CountdownCircleTimer>
         </Center>
       </CardBody>
+      <CardFooter justify={'center'}>
+        <SecretPopover secret={secret} />
+        <CopyToClipboard text={code}>
+          <Button>
+            <CopyIcon marginRight={1} /> Copy OTP
+          </Button>
+        </CopyToClipboard>
+      </CardFooter>
     </Card>
   );
 }

@@ -11,6 +11,7 @@ import {
   Input,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
+import { AddIcon } from '@chakra-ui/icons';
 
 function AddSecret({ saveSecret }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -25,7 +26,9 @@ function AddSecret({ saveSecret }) {
 
   return (
     <>
-      <Button onClick={onOpen}>+ Add Secret</Button>
+      <Button onClick={onOpen}>
+        <AddIcon marginRight={2} /> Add Secret
+      </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
