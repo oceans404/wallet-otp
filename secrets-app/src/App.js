@@ -13,10 +13,10 @@ import {
 
 import { useAccount, useDisconnect } from 'wagmi';
 
-import ServiceCard from './ServiceCard';
-import AddSecret from './AddSecret';
+import ServiceCard from './components/ServiceCard';
+import AddSecret from './components/AddSecret';
 import './App.css';
-import LandingPage from './LandingPage';
+import LandingPage from './pages/LandingPage';
 
 const config = {
   initialColorMode: 'dark',
