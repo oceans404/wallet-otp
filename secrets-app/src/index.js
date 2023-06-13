@@ -1,5 +1,5 @@
 import { ColorModeScript } from '@chakra-ui/react';
-import React, { StrictMode } from 'react';
+import React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -36,7 +36,16 @@ root.render(
       <App />
     </WagmiConfig>
 
-    <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+    <Web3Modal
+      projectId={projectId}
+      ethereumClient={ethereumClient}
+      themeVariables={{
+        '--w3m-font-family': 'Roboto, sans-serif',
+        '--w3m-accent-color': 'inherit',
+        '--w3m-button-hover-highlight-border-radius': 'inherit',
+        '--w3m-button-border-radius': 'inherit',
+      }}
+    />
   </>
 );
 

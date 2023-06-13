@@ -4,15 +4,22 @@ import {
   Box,
   VStack,
   Grid,
-  theme,
+  extendTheme,
   Text,
   Container,
   HStack,
+  Button,
 } from '@chakra-ui/react';
 import { Web3Button } from '@web3modal/react';
 
 import ServiceCard from './ServiceCard';
 import AddSecret from './AddSecret';
+import './App.css';
+
+const config = {
+  initialColorMode: 'dark',
+  useSystemColorMode: false,
+};
 
 function App() {
   // todo: implement wallet auth, sign in with ENS
@@ -52,7 +59,7 @@ function App() {
   };
 
   return (
-    <ChakraProvider theme={theme}>
+    <ChakraProvider theme={extendTheme({ config })}>
       <Box textAlign="center" fontSize="xl">
         <Grid minH="100vh" p={3}>
           <VStack spacing={8}>
@@ -61,13 +68,17 @@ function App() {
                 <Text
                   bgGradient="linear(to-l, #7928CA, #FF0080)"
                   bgClip="text"
-                  fontSize="6xl"
+                  fontSize="4xl"
                   fontWeight="extrabold"
                 >
                   My OTPs
                 </Text>
-                <AddSecret saveSecret={encryptAndSaveSecret} />
-                <Web3Button />
+                <div>
+                  <AddSecret saveSecret={encryptAndSaveSecret} />
+                  <Button padding={'0'} marginLeft={2}>
+                    <Web3Button />
+                  </Button>
+                </div>
               </HStack>
 
               {cards.map(c => (

@@ -22,6 +22,7 @@ function AddSecret({ saveSecret }) {
     saveSecret(data);
     reset();
   };
+
   return (
     <>
       <Button onClick={onOpen}>+ Add Secret</Button>
