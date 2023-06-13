@@ -9,6 +9,7 @@ import {
   Container,
   HStack,
 } from '@chakra-ui/react';
+import { Web3Button } from '@web3modal/react';
 
 import ServiceCard from './ServiceCard';
 import AddSecret from './AddSecret';
@@ -66,6 +67,7 @@ function App() {
                   My OTPs
                 </Text>
                 <AddSecret saveSecret={encryptAndSaveSecret} />
+                <Web3Button />
               </HStack>
 
               {cards.map(c => (

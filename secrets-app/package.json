@@ -9,6 +9,8 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
+    "@web3modal/ethereum": "^2.4.5",
+    "@web3modal/react": "^2.4.5",
     "authenticator": "^1.1.5",
     "dotenv": "^16.1.4",
     "framer-motion": "^6.5.1",
@@ -19,6 +21,8 @@
     "react-hook-form": "^7.44.3",
     "react-icons": "^3.11.0",
     "react-scripts": "5.0.1",
+    "viem": "^1.0.6",
+    "wagmi": "^1.2.0",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
