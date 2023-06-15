@@ -18,6 +18,7 @@ import * as eth from '@polybase/eth';
 
 import ServiceCard from './components/ServiceCard';
 import AddSecret from './components/AddSecret';
+import LoaderModal from './components/LoaderModal';
 import './App.css';
 import LandingPage from './pages/LandingPage';
 
@@ -30,6 +31,8 @@ function App() {
   const { address, isConnected } = useAccount();
   const account = getAccount();
   const { disconnect } = useDisconnect();
+  const [polybaseLoading, setPolybaseLoading] = useState(false);
+  const [polybaseRetrying, setPolybaseRetrying] = useState(false);
   // todo: add signed in with ENS ui
 
   // check if wallet is part of data dao
@@ -52,10 +55,6 @@ function App() {
       name: 'Instagram: @steph.test',
       secret: 'tcwb oqj3 f3p3 5lca iarf dpqv rhc6 5iwt',
     },
-    // {
-    //   name: process.env.REACT_APP_FALLBACK_SERVICE_NAME,
-    //   secret: process.env.REACT_APP_FALLBACK_SERVICE_SECRET,
-    // },
   ]);
 
   const listRecords = async () => {
@@ -80,6 +79,8 @@ function App() {
   };
 
   const createRecord = async (id, message) => {
+    console.log('createRecord');
+    setPolybaseLoading(true);
     // .create(args) args array is defined by the constructor fn
     try {
       const records = await polybaseDb
@@ -87,9 +88,17 @@ function App() {
         .create([id, message]);
 
       console.log('success!');
+      setPolybaseRetrying(false);
     } catch (err) {
       console.log(err);
+
+      // -32603 is the error code if user cancels tx
+      if (err.code !== -32603) {
+        createRecord(id, message);
+        setPolybaseRetrying(true);
+      }
     }
+    setPolybaseLoading(false);
   };
 
   const encryptAndSaveSecret = secretData => {
@@ -104,8 +113,6 @@ function App() {
       },
       ...cards,
     ]);
-
-    // createRecord(name, address);
   };
 
   useEffect(() => {
@@ -121,13 +128,9 @@ function App() {
       const addSigner = async () => {
         db.signer(async data => {
           const accounts = await eth.requestAccounts();
-
-          // If there is more than one account, you may wish to ask the user which
-          // account they would like to use
           const account = accounts[0];
           const sig = await eth.sign(data, account);
           setAddedSigner(true);
-          console.log('setAddedSigner');
           return { h: 'eth-personal-sign', sig };
         });
       };
@@ -147,28 +150,19 @@ function App() {
     }
   }, [isConnected]);
 
-  useEffect(() => {
-    if (polybaseDb) {
-      console.log('addedSigner', polybaseDb);
-
-      // listRecordsWhere('message', '==', address).then(recs => {
-      //   const { data } = recs;
-      //   setCollectionData(data.map(d => d.data));
-      // });
-      // .then(async () => {
-      //   await listRecordsWhere('message', '==', 'x');
-      // })
-      // .then(x => console.log(x));
-    }
-  }, [collectionReference]);
-
-  console.log(collectionData);
-
   return (
     <ChakraProvider theme={extendTheme({ config })}>
       <Box textAlign="center" fontSize="xl">
         <Grid minH="100vh" p={3}>
           <VStack spacing={8}>
+            <LoaderModal
+              open={polybaseLoading || polybaseRetrying}
+              message={
+                polybaseLoading
+                  ? 'Sign the message in your wallet to encrypt and save'
+                  : 'Still polling Polybase, please sign again.'
+              }
+            />
             <Container>
               {isConnected && address && (
                 <HStack justifyContent={'space-between'}>
