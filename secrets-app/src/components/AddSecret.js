@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { AddIcon } from '@chakra-ui/icons';
+import { isMobile } from 'react-device-detect';
 
 function AddSecret({ saveSecret }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -30,7 +31,7 @@ function AddSecret({ saveSecret }) {
   return (
     <>
       <Button onClick={onOpen} background={'#7928CA'}>
-        <AddIcon marginRight={2} /> {title}
+        <AddIcon marginRight={2} /> {isMobile ? '2FA' : title}
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>

@@ -11,11 +11,11 @@ import {
 } from '@web3modal/ethereum';
 import { Web3Modal } from '@web3modal/react';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { filecoinCalibration, filecoin, polygonMumbai } from 'wagmi/chains';
+import { mainnet, filecoin, polygonMumbai } from 'wagmi/chains';
 
 require('dotenv').config();
 
-const chains = [filecoinCalibration, filecoin, polygonMumbai];
+const chains = [mainnet, filecoin, polygonMumbai];
 const projectId = process.env.REACT_APP_WALLET_CONNECT_ID;
 
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);

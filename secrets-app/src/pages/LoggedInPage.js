@@ -1,7 +1,19 @@
 import { useState, useEffect } from 'react';
-import { Text, HStack, Button, Card } from '@chakra-ui/react';
+import {
+  Text,
+  HStack,
+  Button,
+  Card,
+  Image,
+  VStack,
+  Tooltip,
+} from '@chakra-ui/react';
+import { getPublicClient } from '@wagmi/core';
+import { isMobile } from 'react-device-detect';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { CopyIcon } from '@chakra-ui/icons';
 
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount, useDisconnect, useEnsName } from 'wagmi';
 import { getAccount } from '@wagmi/core';
 import { Polybase } from '@polybase/client';
 import * as eth from '@polybase/eth';
@@ -12,22 +24,28 @@ import LoaderModal from '../components/LoaderModal';
 
 function LoggedInPage() {
   const { address, isConnected } = useAccount();
+  const { data: ensName } = useEnsName({
+    address,
+  });
+
+  const publicClient = getPublicClient();
+
   const account = getAccount();
   const { disconnect } = useDisconnect();
   const [polybaseLoading, setPolybaseLoading] = useState(false);
   const [polybaseRetrying, setPolybaseRetrying] = useState(false);
-  // todo: add signed in with ENS ui
+  const [ensAvatar, setEnsAvatar] = useState();
 
-  // check if wallet is part of data dao
+  // todo: check if wallet is part of data dao
 
-  // if it's part of data dao get mapping of wallet address -> encrypted collection on Polybase
+  // todo: if it's part of data dao get mapping of wallet address -> encrypted collection on Polybase
 
   const [polybaseDb, setPolygbaseDb] = useState();
   const [defaultNamespace] = useState(
     'pk/0x0a4f8fcf98d7e5745ed5911b7c6f864e92a0016539d9ed46221d1e378ceb1e2498fc2390ee81ab65fd6a6e9255d334bcbed14f25db92faf2c7c4e785181675dc/TestTokens'
   );
   const [collectionReference] = useState('Keys');
-  const [appId] = useState('test2');
+  const [appId] = useState('test3');
 
   // need signer in order to create Polybase records
   const [addedSigner, setAddedSigner] = useState(false);
@@ -59,7 +77,6 @@ function LoggedInPage() {
   };
 
   const createPolybaseRecord = async (service, account, secret) => {
-    console.log('createPolybaseRecord');
     setPolybaseLoading(true);
     try {
       // schema creation types
@@ -70,7 +87,6 @@ function LoggedInPage() {
         .collection(collectionReference)
         .create([id, appId, address, service, account, secret]);
 
-      console.log('success!', record);
       setPolybaseRetrying(false);
 
       // update ui to show new card
@@ -107,10 +123,7 @@ function LoggedInPage() {
         defaultNamespace,
       });
 
-      console.log(account);
-
       const addSigner = async () => {
-        console.log('adding signer');
         setAddedSigner(true);
         db.signer(async data => {
           const accounts = await eth.requestAccounts();
@@ -119,6 +132,16 @@ function LoggedInPage() {
           return { h: 'eth-personal-sign', sig };
         });
 
+        const setAvatar = async () => {
+          if (ensName) {
+            const avatarSrc = await publicClient.getEnsAvatar({
+              name: ensName,
+            });
+            setEnsAvatar(avatarSrc);
+          }
+        };
+
+        setAvatar();
         setPolygbaseDb(db);
       };
 
@@ -127,17 +150,16 @@ function LoggedInPage() {
   }, [isConnected, address]);
 
   useEffect(() => {
-    console.log('check trigger get records', addedSigner);
     if (addedSigner) {
       const getEncryptedDataFromPolybase = async () => {
         return await listRecordsWhereAppIdMatches();
       };
-      console.log('get recs', addedSigner);
-
       // todo: decrypt data
       getEncryptedDataFromPolybase().then(recs => setCards(recs));
     }
   }, [addedSigner]);
+
+  const shortAddress = addr => `${addr.slice(0, 5)}...${addr.slice(-4)}`;
 
   return (
     <>
@@ -162,13 +184,71 @@ function LoggedInPage() {
             </Text>
           </div>
 
+          {/* <BrowserView> */}
           <div>
             <AddSecret saveSecret={encryptAndSaveSecret} />
-            <Button marginLeft={2} onClick={() => disconnect()}>
-              Log out
-            </Button>
           </div>
+          {/* </BrowserView> */}
         </HStack>
+      )}
+
+      {/* NEW LOGGED IN USER */}
+      {cards && (
+        <Card padding={isMobile ? 4 : 10} my={5}>
+          <VStack alignItems="flex-start">
+            <HStack>
+              <Image
+                borderRadius="full"
+                boxSize={isMobile ? '80px' : '100px'}
+                src={ensAvatar}
+                fallbackSrc="https://bafybeie7nvrlwxqkmvj6e3mse5qdvmsozmghccqd7fdxtck6dbhcxt3le4.ipfs.nftstorage.link"
+                marginRight={isMobile ? 2 : 4}
+              />
+              <VStack style={{ textAlign: 'left', alignItems: 'flex-start' }}>
+                <Text>
+                  <strong>gm {ensName ? ensName : 'anon'} </strong>
+                </Text>
+
+                <Text>
+                  <CopyToClipboard text={address}>
+                    <span
+                      style={{
+                        color: 'rgba(255, 255, 255, 0.25)',
+                        marginLeft: '5px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <CopyIcon marginRight={1} />
+                      <Tooltip label="Click to copy address">
+                        {shortAddress(address)}
+                      </Tooltip>
+                    </span>
+                  </CopyToClipboard>
+                </Text>
+
+                {/* <MobileView> */}
+                {/* {' '} */}
+                {/* <HStack> */}
+                {/* <AddSecret saveSecret={encryptAndSaveSecret} /> */}
+                <Button
+                  marginLeft={2}
+                  onClick={() => disconnect()}
+                  width={isMobile ? '100%' : 'fit-content'}
+                >
+                  Log out
+                </Button>
+                {/* </HStack> */}
+                {/* </MobileView> */}
+              </VStack>
+            </HStack>
+          </VStack>
+        </Card>
+      )}
+
+      {cards && cards.length == 0 && (
+        <Text textAlign="left">
+          Get started with Wallet OTP by adding your first 2FA secret
+        </Text>
       )}
 
       {/* Returning user with secrets*/}
@@ -181,14 +261,6 @@ function LoggedInPage() {
             secret={c.secret}
           />
         ))}
-
-      {/* NEW LOGGED IN USER */}
-      {cards && cards.length === 0 && (
-        <Card padding={50} my={10}>
-          Welcome [todo ENS here]! You haven't stored any secrets yet. Get
-          started by adding a 2FA secret
-        </Card>
-      )}
     </>
   );
 }
