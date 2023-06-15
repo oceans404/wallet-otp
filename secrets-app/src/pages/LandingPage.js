@@ -1,4 +1,6 @@
 import { Text, Container, Button, Center } from '@chakra-ui/react';
+import { test2FAData } from '../testData';
+import ServiceCard from '../components/ServiceCard';
 
 import { Web3Button } from '@web3modal/react';
 
@@ -9,7 +11,7 @@ function LandingPage() {
         <Text
           bgGradient="linear(to-l, #7928CA, #FF0080)"
           bgClip="text"
-          fontSize="4xl"
+          fontSize="5xl"
           fontWeight="bold"
           marginTop={4}
         >
@@ -17,7 +19,7 @@ function LandingPage() {
         </Text>
 
         <Text fontSize="large" fontWeight="bold">
-          is a wallet encrypted, self-custodial, 2FA solution
+          is a decentralized, wallet encrypted, 2FA storage solution
         </Text>
         <br></br>
         <Text fontSize={'14px'}>
@@ -28,8 +30,7 @@ function LandingPage() {
           before storing on decentralized storage. When you need 2FA, Wallet OTP
           generates new dynamic 6 digit OTPs (one time passwords) every 30
           seconds. That way, you and only you can use Wallet OTP to log in to
-          accounts across the web. Ready to get started? Sign in with your
-          wallet ⬇️
+          accounts across the web. Sign in to use Wallet OTP ⬇️
           <Center my={6}>
             <Button
               padding={'0'}
@@ -72,6 +73,15 @@ function LandingPage() {
           service. 👯‍♀️
         </Text>
       </div>
+
+      {test2FAData.map(c => (
+        <ServiceCard
+          key={c.secret}
+          service={c.service}
+          account={c.account}
+          secret={c.secret}
+        />
+      ))}
     </>
   );
 }
