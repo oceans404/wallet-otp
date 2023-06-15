@@ -1,4 +1,4 @@
-import { Text, Container, Button } from '@chakra-ui/react';
+import { Text, Container, Button, Center } from '@chakra-ui/react';
 
 import { Web3Button } from '@web3modal/react';
 
@@ -13,11 +13,11 @@ function LandingPage() {
           fontWeight="bold"
           marginTop={4}
         >
-          say GM to Wallet OTP
+          Wallet OTP
         </Text>
 
         <Text fontSize="large" fontWeight="bold">
-          a wallet encrypted, self-custodial, 2FA solution
+          is a wallet encrypted, self-custodial, 2FA solution
         </Text>
         <br></br>
         <Text fontSize={'14px'}>
@@ -28,28 +28,27 @@ function LandingPage() {
           before storing on decentralized storage. When you need 2FA, Wallet OTP
           generates new dynamic 6 digit OTPs (one time passwords) every 30
           seconds. That way, you and only you can use Wallet OTP to log in to
-          accounts across the web.
-          <br></br>
-          <br></br>
+          accounts across the web. Ready to get started? Sign in with your
+          wallet ⬇️
+          <Center my={6}>
+            <Button
+              padding={'0'}
+              my={4}
+              className="sign-in-button"
+              background={'#7928CA'}
+            >
+              <Web3Button
+                icon="hide"
+                avatar="hide"
+                label="Sign in with your wallet"
+              />{' '}
+            </Button>
+          </Center>
           Check out the example below to see Wallet OTP in action. Don't worry,
           the example uses test accounts and test secrets. Ready to start using
           Wallet OTP? Sign in to manage 2FA from Wallet OTP.
         </Text>
         <br></br>
-        <div>
-          <Button
-            padding={'0'}
-            my={4}
-            className="sign-in-button"
-            background={'#7928CA'}
-          >
-            <Web3Button
-              icon="hide"
-              avatar="hide"
-              label="Sign in with your wallet"
-            />{' '}
-          </Button>
-        </div>
       </Container>
 
       <br></br>
