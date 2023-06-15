@@ -28,6 +28,10 @@ function LoggedInPage() {
     address,
   });
 
+  const ensProfile = ensName
+    ? `https://app.ens.domains/${ensName}`
+    : 'https://app.ens.domains/';
+
   const publicClient = getPublicClient();
 
   const account = getAccount();
@@ -197,16 +201,29 @@ function LoggedInPage() {
         <Card padding={isMobile ? 4 : 10} my={5}>
           <VStack alignItems="flex-start">
             <HStack>
-              <Image
-                borderRadius="full"
-                boxSize={isMobile ? '80px' : '100px'}
-                src={ensAvatar}
-                fallbackSrc="https://bafybeie7nvrlwxqkmvj6e3mse5qdvmsozmghccqd7fdxtck6dbhcxt3le4.ipfs.nftstorage.link"
-                marginRight={isMobile ? 2 : 4}
-              />
+              <a href={ensProfile} target="_blank">
+                <Image
+                  borderRadius="full"
+                  boxSize={isMobile ? '80px' : '100px'}
+                  src={ensAvatar}
+                  // img for users that don't have an ENS avatar stored on NFT.storage 🐛✨🌈
+                  fallbackSrc="https://bafybeie7nvrlwxqkmvj6e3mse5qdvmsozmghccqd7fdxtck6dbhcxt3le4.ipfs.nftstorage.link"
+                  marginRight={isMobile ? 2 : 4}
+                />
+              </a>
+
               <VStack style={{ textAlign: 'left', alignItems: 'flex-start' }}>
                 <Text>
-                  <strong>gm {ensName ? ensName : 'anon'} </strong>
+                  <strong>
+                    gm{' '}
+                    {ensName ? (
+                      <a href={ensProfile} target="_blank">
+                        {ensName}
+                      </a>
+                    ) : (
+                      'anon'
+                    )}{' '}
+                  </strong>
                 </Text>
 
                 <Text>
