@@ -25,7 +25,7 @@ function SecretPopover({ secret }) {
         <PopoverHeader>2FA secret</PopoverHeader>
         <PopoverBody color="#FF0080">
           <p>
-            {secret.slice(0, 9)} .... {secret.slice(30)}
+            {secret.slice(0, 9)} .... {secret.slice(-9)}
           </p>
           <CopyToClipboard text={secret}>
             <Button marginTop={2}>

@@ -13,7 +13,7 @@ import * as authenticator from 'authenticator';
 import { useState, useEffect } from 'react';
 import SecretPopover from './SecretPopover';
 
-function ServiceCard({ name, secret }) {
+function ServiceCard({ service, account, secret }) {
   const [timerRefresh, setTimerRefresh] = useState(0);
   const [code, setCode] = useState('******');
   // starting duration offset from current time (new code at 0/60 and 30 seconds)
@@ -56,7 +56,9 @@ function ServiceCard({ name, secret }) {
         </svg>
       </Box>
       <CardBody>
-        <div>{name}</div>
+        <div>
+          {service}: {account}
+        </div>
         <Center marginTop={5}>
           <CountdownCircleTimer
             key={timerRefresh}

@@ -21,6 +21,7 @@ import AddSecret from './components/AddSecret';
 import LoaderModal from './components/LoaderModal';
 import './App.css';
 import LandingPage from './pages/LandingPage';
+import { test2FAData } from './testData';
 
 const config = {
   initialColorMode: 'dark',
@@ -42,20 +43,17 @@ function App() {
   // these secrets are currently hardcoded but will come from Polybase or some encrypted db
   // todo: decrypt secret then display cards
   const [polybaseDb, setPolygbaseDb] = useState();
-  const [collectionReference, setCollectionReference] = useState();
+  const [defaultNamespace] = useState(
+    'pk/0x0a4f8fcf98d7e5745ed5911b7c6f864e92a0016539d9ed46221d1e378ceb1e2498fc2390ee81ab65fd6a6e9255d334bcbed14f25db92faf2c7c4e785181675dc/TestTokens'
+  );
+  const [collectionReference] = useState('Keys');
+  const [appId] = useState('test1');
+
   const [collectionData, setCollectionData] = useState([]);
+
+  // need signer in order to create Polybase records
   const [addedSigner, setAddedSigner] = useState(false);
-  const [cards, setCards] = useState([
-    // these are fake accounts and fake secrets
-    {
-      name: 'Google: test@google.com',
-      secret: 'j22h ni4e cd4o hqrx fka7 7uye wf2d xh77',
-    },
-    {
-      name: 'Instagram: @steph.test',
-      secret: 'tcwb oqj3 f3p3 5lca iarf dpqv rhc6 5iwt',
-    },
-  ]);
+  const [cards, setCards] = useState(test2FAData);
 
   const listRecords = async () => {
     const records = await polybaseDb.collection(collectionReference).get();
@@ -78,49 +76,51 @@ function App() {
     return records;
   };
 
-  const createRecord = async (id, message) => {
+  const createRecord = async (service, account, secret) => {
     console.log('createRecord');
     setPolybaseLoading(true);
-    // .create(args) args array is defined by the constructor fn
     try {
-      const records = await polybaseDb
-        .collection(collectionReference)
-        .create([id, message]);
+      // schema creation types
+      // id: string, appId: string, address: string, service: string, account: string, secret: string
+      const id = `preencryption${Date.now().toString()}`;
 
-      console.log('success!');
+      const record = await polybaseDb
+        .collection(collectionReference)
+        .create([id, appId, address, service, account, secret]);
+
+      console.log('success!', record);
       setPolybaseRetrying(false);
+
+      // update ui to show new card
+      setCards(cards => [
+        {
+          service,
+          account,
+          secret,
+        },
+        ...cards,
+      ]);
     } catch (err) {
       console.log(err);
 
       // -32603 is the error code if user cancels tx
       if (err.code !== -32603) {
-        createRecord(id, message);
+        createRecord(service, account, secret);
         setPolybaseRetrying(true);
       }
     }
     setPolybaseLoading(false);
   };
 
-  const encryptAndSaveSecret = secretData => {
-    // todo: encrypt and post to Polybase
-    console.log(secretData);
-
-    const name = `${secretData.Service}: ${secretData.Account}`;
-    setCards(cards => [
-      {
-        name,
-        secret: secretData.Secret,
-      },
-      ...cards,
-    ]);
+  const encryptAndSaveSecret = ({ Service, Account, Secret }) => {
+    // todo: encrypt
+    createRecord(Service, Account, Secret);
   };
 
   useEffect(() => {
     if (isConnected) {
       const db = new Polybase({
-        // https://explorer.testnet.polybase.xyz/studio/pk%2F0x0a4f8fcf98d7e5745ed5911b7c6f864e92a0016539d9ed46221d1e378ceb1e2498fc2390ee81ab65fd6a6e9255d334bcbed14f25db92faf2c7c4e785181675dc%2Fugh/collections/User
-        defaultNamespace:
-          'pk/0x0a4f8fcf98d7e5745ed5911b7c6f864e92a0016539d9ed46221d1e378ceb1e2498fc2390ee81ab65fd6a6e9255d334bcbed14f25db92faf2c7c4e785181675dc/ugh',
+        defaultNamespace,
       });
 
       console.log(account);
@@ -143,9 +143,6 @@ function App() {
         .then(() => {
           setPolygbaseDb(db);
           console.log('setPolygbaseDb');
-        })
-        .then(() => {
-          setCollectionReference('User');
         });
     }
   }, [isConnected]);
@@ -175,21 +172,6 @@ function App() {
                     My OTPs
                   </Text>
                   <div>
-                    <Button
-                      onClick={() => {
-                        createRecord(`steph ${new Date().toString()}`, address);
-                      }}
-                    >
-                      add rec
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        const firstRec = deleteRecord('abc');
-                        console.log(firstRec);
-                      }}
-                    >
-                      delete rec
-                    </Button>
                     <AddSecret saveSecret={encryptAndSaveSecret} />
                     <Button marginLeft={2} onClick={() => disconnect()}>
                       Log out
@@ -199,7 +181,12 @@ function App() {
               )}
               {!isConnected && <LandingPage />}
               {cards.map(c => (
-                <ServiceCard key={c.name} name={c.name} secret={c.secret} />
+                <ServiceCard
+                  key={c.secret}
+                  service={c.service}
+                  account={c.account}
+                  secret={c.secret}
+                />
               ))}
             </Container>
           </VStack>
