@@ -13,7 +13,7 @@ import * as authenticator from 'authenticator';
 import { useState, useEffect } from 'react';
 import SecretPopover from './SecretPopover';
 
-function ServiceCard({ service, account, secret }) {
+function ServiceCard({ service, account, secret, isDemo }) {
   const [timerRefresh, setTimerRefresh] = useState(0);
   const [code, setCode] = useState('******');
   // starting duration offset from current time (new code at 0/60 and 30 seconds)
@@ -72,7 +72,7 @@ function ServiceCard({ service, account, secret }) {
         </Center>
       </CardBody>
       <CardFooter justify={'center'}>
-        <SecretPopover secret={secret} />
+        <SecretPopover secret={secret} isDemo={isDemo} />
         <CopyToClipboard text={code}>
           <Button>
             <CopyIcon marginRight={1} /> Copy OTP

@@ -24,13 +24,19 @@ function LandingPage() {
         <br></br>
         <Text fontSize={'14px'}>
           Two-factor authentication (2FA) adds an additional layer of protection
-          beyond passwords to your web2 and web3 accounts. Wallet OTP is a free
-          and completely open sourced public good that protects all your
-          accounts by encrypting your 2FA secrets with your Wallet's public key
-          before storing on decentralized storage. When you need 2FA, Wallet OTP
-          generates new dynamic 6 digit OTPs (one time passwords) every 30
-          seconds. That way, you and only you can use Wallet OTP to log in to
-          accounts across the web. Sign in to use Wallet OTP ⬇️
+          beyond passwords to your web2 and web3 accounts. Wallet OTP is{' '}
+          <a
+            href="https://github.com/oceans404/wallet-otp"
+            target="_blank"
+            style={{ textDecoration: 'underline' }}
+          >
+            a free and completely open sourced public good
+          </a>{' '}
+          that protects all your accounts by encrypting your 2FA secrets with
+          your Wallet's public key before storing on decentralized storage. When
+          you need 2FA, Wallet OTP generates new dynamic 6 digit OTPs (one time
+          passwords) every 30 seconds. That way, you and only you can use Wallet
+          OTP to log in to accounts across the web. Sign in to use Wallet OTP ⬇️
           <Center my={6}>
             <Button
               padding={'0'}
@@ -45,14 +51,9 @@ function LandingPage() {
               />{' '}
             </Button>
           </Center>
-          Check out the example below to see Wallet OTP in action. Don't worry,
-          the example uses test accounts and test secrets. Ready to start using
-          Wallet OTP? Sign in to manage 2FA from Wallet OTP.
         </Text>
         <br></br>
       </Container>
-
-      <br></br>
       <hr></hr>
       <br></br>
 
@@ -67,15 +68,18 @@ function LandingPage() {
           Wallet OTP in action with demo accounts & secrets
         </Text>
         <Text fontSize={'12px'} textAlign={'left'}>
-          Want to test whether Wallet OTP's one time passwords actually work?
-          Add these demo 2FA secrets to your Authy or Google Authenticator app.
-          The Wallet OTP dynamically generated OTPs match OTPs from any other
-          service. 👯‍♀️
+          This is a demo to show Wallet OTP in action in case you want to check
+          out the experience before signing in with your wallet. Don't worry,
+          the demo uses test accounts and test secrets. Want to test whether
+          Wallet OTP's one time passwords actually work? Add these demo 2FA
+          secrets to your Authy or Google Authenticator app. The Wallet OTP
+          dynamically generated OTPs match OTPs from any other service. 👯‍♀️
         </Text>
       </div>
 
       {test2FAData.map(c => (
         <ServiceCard
+          isDemo
           key={c.secret}
           service={c.service}
           account={c.account}

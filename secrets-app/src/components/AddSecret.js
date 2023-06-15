@@ -9,6 +9,7 @@ import {
   Button,
   useDisclosure,
   Input,
+  Text,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { AddIcon } from '@chakra-ui/icons';
@@ -24,7 +25,7 @@ function AddSecret({ saveSecret }) {
     reset();
   };
 
-  const title = 'Add 2FA secret';
+  const title = '2FA secret';
 
   return (
     <>
@@ -35,19 +36,21 @@ function AddSecret({ saveSecret }) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{title}</ModalHeader>
+          <ModalHeader>Add a new {title}</ModalHeader>
           <ModalCloseButton />
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
+              <Text>Service</Text>
               <Input
                 type="text"
-                placeholder="Service"
+                placeholder="Google"
                 {...register('Service', { required: true, maxLength: 80 })}
                 marginBottom={2}
               />
+              <Text>Account</Text>
               <Input
                 type="text"
-                placeholder="Account"
+                placeholder="steph@gmail.com"
                 {...register('Account', {
                   required: true,
                   max: 100,
@@ -55,9 +58,10 @@ function AddSecret({ saveSecret }) {
                 })}
                 marginBottom={2}
               />
+              <Text>2FA secret key from service</Text>
               <Input
                 type="text"
-                placeholder="2FA secret key"
+                placeholder="j22h ni4e cd4o hqrx fka7 7uye wf2d xh77"
                 {...register('Secret', {
                   required: true,
                   minLength: 32,
