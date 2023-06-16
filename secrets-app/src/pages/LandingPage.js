@@ -1,8 +1,11 @@
-import { Text, Container, Button, Center, Flex } from '@chakra-ui/react';
+import { Text, Container, Button, Center, VStack } from '@chakra-ui/react';
+import QRCode from 'react-qr-code';
 import { test2FAData } from '../testData';
 import ServiceCard from '../components/ServiceCard';
 
 import { Web3Button } from '@web3modal/react';
+import { isBrowser } from 'react-device-detect';
+import { openInNewTab } from '../helper';
 
 function LandingPage() {
   return (
@@ -38,18 +41,42 @@ function LandingPage() {
           passwords) every 30 seconds. That way, you and only you can use Wallet
           OTP to log in to accounts across the web. Sign in to use Wallet OTP ⬇️
           <Center my={6}>
-            <Button
-              padding={'0'}
-              my={4}
-              className="sign-in-button"
-              background={'#7928CA'}
-            >
-              <Web3Button
-                icon="hide"
-                avatar="hide"
-                label="Sign in with your wallet"
-              />{' '}
-            </Button>
+            {window.ethereum && (
+              <Button padding={'0'} my={4} background={'#7928CA'}>
+                <Web3Button
+                  icon="hide"
+                  avatar="hide"
+                  label="Sign in with your wallet"
+                />
+              </Button>
+            )}
+            {!window.ethereum && (
+              <VStack>
+                {isBrowser ? (
+                  <>
+                    <Text>Sign QR to open in Metamask Mobile</Text>
+                    <QRCode
+                      size={50}
+                      style={{ height: 'auto', maxWidth: '50%', width: '50%' }}
+                      value="https://metamask.app.link/dapp/wallet-otp.on.fleek.co"
+                      viewBox={`0 0 50 50`}
+                    />
+                  </>
+                ) : (
+                  <Button
+                    my={4}
+                    background={'#7928CA'}
+                    onClick={() =>
+                      openInNewTab(
+                        'https://metamask.app.link/dapp/wallet-otp.on.fleek.co'
+                      )
+                    }
+                  >
+                    Sign in from Metamask Mobile
+                  </Button>
+                )}
+              </VStack>
+            )}
           </Center>
         </Text>
         <br></br>

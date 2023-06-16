@@ -68,11 +68,13 @@ function LoggedInPage() {
     connectToLit().then(async lc => {
       setLitClient(lc);
 
-      const sig = await LitJsSdk.checkAndSignAuthMessage({
-        chain,
-      });
+      if (window.ethereum) {
+        const sig = await LitJsSdk.checkAndSignAuthMessage({
+          chain,
+        });
 
-      setAuthSig(sig);
+        setAuthSig(sig);
+      }
     });
   }, []);
 

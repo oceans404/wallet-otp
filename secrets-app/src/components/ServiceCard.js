@@ -14,11 +14,7 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import * as authenticator from 'authenticator';
 import { useState, useEffect } from 'react';
 import SecretPopover from './SecretPopover';
-
-function openInNewTab(url) {
-  var win = window.open(url, '_blank');
-  win.focus();
-}
+import { openInNewTab } from '../helper';
 
 function ServiceCard({ service, account, secret, isDemo, linkToEncodedData }) {
   const [timerRefresh, setTimerRefresh] = useState(0);
