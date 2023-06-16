@@ -9,4 +9,14 @@ export const test2FAData = [
     account: '@steph.test',
     secret: 'tcwb oqj3 f3p3 5lca iarf dpqv rhc6 5iwt',
   },
+  {
+    service: 'Twitter',
+    account: 'oceans404',
+    secret: 'abcd ni4e cd4o hqrx fka7 7uye wf2d ffff',
+  },
+  {
+    service: 'Coinbase',
+    account: 'main',
+    secret: 'oxmh oqj3 f3p3 5lca iarf dpqv rhc6 yn12',
+  },
 ];

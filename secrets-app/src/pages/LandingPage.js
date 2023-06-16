@@ -1,4 +1,4 @@
-import { Text, Container, Button, Center } from '@chakra-ui/react';
+import { Text, Container, Button, Center, Flex } from '@chakra-ui/react';
 import { test2FAData } from '../testData';
 import ServiceCard from '../components/ServiceCard';
 
@@ -76,16 +76,17 @@ function LandingPage() {
           dynamically generated OTPs match OTPs from any other service. 👯‍♀️
         </Text>
       </div>
-
-      {test2FAData.map(c => (
-        <ServiceCard
-          isDemo
-          key={c.secret}
-          service={c.service}
-          account={c.account}
-          secret={c.secret}
-        />
-      ))}
+      <div>
+        {test2FAData.map(c => (
+          <ServiceCard
+            isDemo
+            key={c.secret}
+            service={c.service}
+            account={c.account}
+            secret={c.secret}
+          />
+        ))}
+      </div>
     </>
   );
 }

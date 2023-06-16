@@ -5,15 +5,22 @@ import {
   Box,
   CardFooter,
   Button,
+  VStack,
+  Text,
 } from '@chakra-ui/react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { CopyIcon } from '@chakra-ui/icons';
+import { CopyIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import * as authenticator from 'authenticator';
 import { useState, useEffect } from 'react';
 import SecretPopover from './SecretPopover';
 
-function ServiceCard({ service, account, secret, isDemo }) {
+function openInNewTab(url) {
+  var win = window.open(url, '_blank');
+  win.focus();
+}
+
+function ServiceCard({ service, account, secret, isDemo, linkToEncodedData }) {
   const [timerRefresh, setTimerRefresh] = useState(0);
   const [code, setCode] = useState('******');
   // starting duration offset from current time (new code at 0/60 and 30 seconds)
@@ -55,29 +62,49 @@ function ServiceCard({ service, account, secret, isDemo }) {
           </defs>
         </svg>
       </Box>
+
       <CardBody>
         <div>
           {service}: {account}
         </div>
-        <Center marginTop={5}>
-          <CountdownCircleTimer
-            key={timerRefresh}
-            colors="url(#your-unique-id)"
-            isPlaying
-            duration={duration}
-            size={120}
-          >
-            {({ remainingTime }) => spaceOutCode(code)}
-          </CountdownCircleTimer>
-        </Center>
-      </CardBody>
-      <CardFooter justify={'center'}>
-        <SecretPopover secret={secret} isDemo={isDemo} />
         <CopyToClipboard text={code}>
-          <Button>
-            <CopyIcon marginRight={1} /> Copy OTP
-          </Button>
+          <Center marginTop={5} style={{ cursor: 'pointer' }}>
+            <CountdownCircleTimer
+              key={timerRefresh}
+              colors="url(#your-unique-id)"
+              isPlaying
+              duration={duration}
+              size={150}
+            >
+              {({ remainingTime }) => (
+                <VStack gap={0}>
+                  <Text fontSize={'24px'} color={'#FF0080'} m={0} p={0}>
+                    <strong>{spaceOutCode(code)}</strong>
+                  </Text>
+                  <Text color={''} fontSize={'13px'} m={0} p={0}>
+                    <CopyIcon /> Copy OTP
+                  </Text>
+                </VStack>
+              )}
+            </CountdownCircleTimer>
+          </Center>
         </CopyToClipboard>
+      </CardBody>
+
+      <CardFooter justify={'center'}>
+        <SecretPopover
+          secret={secret}
+          isDemo={isDemo}
+          linkToEncodedData={linkToEncodedData}
+        />
+        {linkToEncodedData && (
+          <Button
+            onClick={() => openInNewTab(linkToEncodedData)}
+            marginLeft={4}
+          >
+            <ExternalLinkIcon marginRight={1} /> Encrypted data
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

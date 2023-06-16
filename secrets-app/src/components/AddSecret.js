@@ -73,7 +73,7 @@ function AddSecret({ saveSecret }) {
 
             <ModalFooter>
               <Button
-                background="#FF0080"
+                background="#7928CA"
                 mr={3}
                 onClick={handleSubmit(onSubmit)}
               >

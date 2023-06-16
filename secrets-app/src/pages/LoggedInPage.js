@@ -12,9 +12,9 @@ import { getPublicClient } from '@wagmi/core';
 import { isMobile } from 'react-device-detect';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { CopyIcon } from '@chakra-ui/icons';
+import * as LitJsSdk from '@lit-protocol/lit-node-client';
 
 import { useAccount, useDisconnect, useEnsName } from 'wagmi';
-import { getAccount } from '@wagmi/core';
 import { Polybase } from '@polybase/client';
 import * as eth from '@polybase/eth';
 
@@ -27,29 +27,132 @@ function LoggedInPage() {
   const { data: ensName } = useEnsName({
     address,
   });
-
   const ensProfile = ensName
     ? `https://app.ens.domains/${ensName}`
     : 'https://app.ens.domains/';
-
   const publicClient = getPublicClient();
 
-  const account = getAccount();
   const { disconnect } = useDisconnect();
+  const [chain] = useState('ethereum');
+  const [authSig, setAuthSig] = useState();
   const [polybaseLoading, setPolybaseLoading] = useState(false);
   const [polybaseRetrying, setPolybaseRetrying] = useState(false);
   const [ensAvatar, setEnsAvatar] = useState();
 
-  // todo: check if wallet is part of data dao
+  const [litClient, setLitClient] = useState();
 
+  const addressAccessControl = address => [
+    {
+      contractAddress: '',
+      standardContractType: '',
+      chain,
+      method: '',
+      parameters: [':userAddress'],
+      returnValueTest: {
+        comparator: '=',
+        value: address,
+      },
+    },
+  ];
+
+  // todo: check if wallet is part of data dao
   // todo: if it's part of data dao get mapping of wallet address -> encrypted collection on Polybase
+
+  useEffect(() => {
+    const connectToLit = async () => {
+      const client = new LitJsSdk.LitNodeClient();
+      await client.connect();
+      return client;
+    };
+    connectToLit().then(async lc => {
+      setLitClient(lc);
+
+      const sig = await LitJsSdk.checkAndSignAuthMessage({
+        chain,
+      });
+
+      setAuthSig(sig);
+    });
+  }, []);
+
+  const encryptWithLit = async msg => {
+    const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(msg);
+
+    const encryptedSymmetricKey = await litClient.saveEncryptionKey({
+      accessControlConditions: addressAccessControl(address),
+      symmetricKey,
+      authSig,
+      chain,
+    });
+
+    const encryptedMessageStr = await LitJsSdk.blobToBase64String(
+      encryptedString
+    );
+
+    const encryptedKeyStr = LitJsSdk.uint8arrayToString(
+      encryptedSymmetricKey,
+      'base16'
+    );
+
+    return {
+      encryptedString: encryptedMessageStr,
+      encryptedSymmetricKey: encryptedKeyStr,
+    };
+  };
+
+  const decryptRec = async rec => {
+    const { id, service, serviceKey, account, accountKey, secret, secretKey } =
+      rec;
+    return Promise.all([
+      id,
+      decryptWithLit(service, serviceKey),
+      decryptWithLit(account, accountKey),
+      decryptWithLit(secret, secretKey),
+    ]).then(([id, decryptedService, decryptedAccount, decryptedSecret]) => ({
+      id,
+      service: decryptedService,
+      account: decryptedAccount,
+      secret: decryptedSecret,
+    }));
+  };
+
+  const decryptPolybaseRecs = async recs => {
+    const decryptedPolybaseRecs = [];
+    for (let rec of recs) {
+      const dr = await decryptRec(rec);
+      decryptedPolybaseRecs.push(dr);
+    }
+    return decryptedPolybaseRecs;
+  };
+
+  const decryptWithLit = async (encryptedString, encryptedSymmetricKey) => {
+    if (litClient) {
+      const encryptedMessageBlob = await LitJsSdk.base64StringToBlob(
+        encryptedString
+      );
+
+      const symmetricKey = await litClient.getEncryptionKey({
+        accessControlConditions: addressAccessControl(address),
+        toDecrypt: encryptedSymmetricKey,
+        chain,
+        authSig,
+      });
+
+      const decryptedMessage = await LitJsSdk.decryptString(
+        encryptedMessageBlob,
+        symmetricKey
+      );
+
+      return decryptedMessage;
+    }
+  };
 
   const [polybaseDb, setPolygbaseDb] = useState();
   const [defaultNamespace] = useState(
     'pk/0x0a4f8fcf98d7e5745ed5911b7c6f864e92a0016539d9ed46221d1e378ceb1e2498fc2390ee81ab65fd6a6e9255d334bcbed14f25db92faf2c7c4e785181675dc/TestTokens'
   );
   const [collectionReference] = useState('Keys');
-  const [appId] = useState('test3');
+  const [appId] = useState('wallet-otp');
 
   // need signer in order to create Polybase records
   const [addedSigner, setAddedSigner] = useState(false);
@@ -84,21 +187,33 @@ function LoggedInPage() {
     setPolybaseLoading(true);
     try {
       // schema creation types
-      // id: string, appId: string, address: string, service: string, account: string, secret: string
-      const id = `preencryption${Date.now().toString()}`;
+      // id: string, appId: string, address: string, service: string, serviceKey: string,
+      // account: string, accountKey: string, secret: string, secretKey: string
+      const id = `encrypted${Date.now().toString()}`;
 
       const record = await polybaseDb
         .collection(collectionReference)
-        .create([id, appId, address, service, account, secret]);
+        .create([
+          id,
+          appId,
+          address,
+          service.encryptedString,
+          service.encryptedSymmetricKey,
+          account.encryptedString,
+          account.encryptedSymmetricKey,
+          secret.encryptedString,
+          secret.encryptedSymmetricKey,
+        ]);
 
       setPolybaseRetrying(false);
 
       // update ui to show new card
       setCards(cards => [
         {
-          service,
-          account,
-          secret,
+          id,
+          service: service.Service,
+          account: account.Account,
+          secret: secret.Secret,
         },
         ...cards,
       ]);
@@ -116,9 +231,15 @@ function LoggedInPage() {
     setPolybaseLoading(false);
   };
 
-  const encryptAndSaveSecret = ({ Service, Account, Secret }) => {
-    // todo: encrypt
-    createPolybaseRecord(Service, Account, Secret);
+  const encryptAndSaveSecret = async ({ Service, Account, Secret }) => {
+    const encryptedService = await encryptWithLit(Service);
+    const encryptedAccount = await encryptWithLit(Account);
+    const encryptedSecret = await encryptWithLit(Secret);
+    createPolybaseRecord(
+      { ...encryptedService, Service },
+      { ...encryptedAccount, Account },
+      { ...encryptedSecret, Secret }
+    );
   };
 
   useEffect(() => {
@@ -154,16 +275,22 @@ function LoggedInPage() {
   }, [isConnected, address]);
 
   useEffect(() => {
-    if (addedSigner) {
+    if (addedSigner && litClient && authSig) {
       const getEncryptedDataFromPolybase = async () => {
         return await listRecordsWhereAppIdMatches();
       };
-      // todo: decrypt data
-      getEncryptedDataFromPolybase().then(recs => setCards(recs));
+      getEncryptedDataFromPolybase().then(async recs => {
+        await decryptPolybaseRecs(recs).then(decryptedRecs => {
+          setCards(decryptedRecs);
+        });
+      });
     }
-  }, [addedSigner]);
+  }, [addedSigner, litClient, authSig]);
 
   const shortAddress = addr => `${addr.slice(0, 5)}...${addr.slice(-4)}`;
+  const encodedNamespaceDb = encodeURIComponent(
+    `${defaultNamespace}/${collectionReference}`
+  );
 
   return (
     <>
@@ -195,7 +322,6 @@ function LoggedInPage() {
           {/* </BrowserView> */}
         </HStack>
       )}
-
       {/* NEW LOGGED IN USER */}
       {cards && (
         <Card padding={isMobile ? 4 : 10} my={5}>
@@ -243,10 +369,6 @@ function LoggedInPage() {
                   </CopyToClipboard>
                 </Text>
 
-                {/* <MobileView> */}
-                {/* {' '} */}
-                {/* <HStack> */}
-                {/* <AddSecret saveSecret={encryptAndSaveSecret} /> */}
                 <Button
                   marginLeft={2}
                   onClick={() => disconnect()}
@@ -254,25 +376,22 @@ function LoggedInPage() {
                 >
                   Log out
                 </Button>
-                {/* </HStack> */}
-                {/* </MobileView> */}
               </VStack>
             </HStack>
           </VStack>
         </Card>
       )}
-
       {cards && cards.length == 0 && (
         <Text textAlign="left">
           Get started with Wallet OTP by adding your first 2FA secret
         </Text>
       )}
-
       {/* Returning user with secrets*/}
       {cards &&
         cards.map(c => (
           <ServiceCard
-            key={c.secret}
+            key={c.id}
+            linkToEncodedData={`https://testnet.polybase.xyz/v0/collections/${encodedNamespaceDb}/records/${c.id}`}
             service={c.service}
             account={c.account}
             secret={c.secret}

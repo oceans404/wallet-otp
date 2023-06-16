@@ -8,6 +8,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@ensdomains/ensjs": "^3.0.0-alpha.64",
+    "@lit-protocol/lit-node-client": "^2.2.25",
     "@polybase/client": "^0.6.2",
     "@polybase/eth": "^0.6.2",
     "@testing-library/jest-dom": "^5.16.5",

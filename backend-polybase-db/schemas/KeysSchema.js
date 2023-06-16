@@ -20,22 +20,28 @@ collection Keys {
   // explicit filter
   @index(address, appId);
 
-  // encrypted name of service (google, netflix, hulu, coinbase, kraken)
+  // encrypted name of service (google, netflix, hulu, coinbase, kraken) & service symmetric key
   service: string; 
+  serviceKey: string; 
 
-  // encrypted account name in case you have multiple profiles
+  // encrypted account name in case you have multiple profiles & account symmetric key
   account: string; 
+  accountKey: string; 
 
-  // encrypted 2fa secret key
+  // encrypted 2fa secret key & secret symmetric key
   secret: string; 
+  secretKey: string; 
 
-  constructor (id: string, appId: string, address: string, service: string, account: string, secret: string) {
+  constructor (id: string, appId: string, address: string, service: string, serviceKey: string, account: string, accountKey: string, secret: string, secretKey: string) {
     this.id = id;
     this.appId = appId;
     this.address = address;
     this.service = service;
+    this.serviceKey = serviceKey;
     this.account = account;
+    this.accountKey = accountKey;
     this.secret = secret;
+    this.secretKey = secretKey;
     
     // set public key to the user creating the record's key
     this.publicKey = ctx.publicKey;
