@@ -332,9 +332,12 @@ function LoggedInPage() {
                 <Image
                   borderRadius="full"
                   boxSize={isMobile ? '80px' : '100px'}
+                  // if the user has an ENS with a set avatar, the pfp is their avatar
                   src={ensAvatar}
-                  // img for users that don't have an ENS avatar stored on NFT.storage 🐛✨🌈
-                  fallbackSrc="https://bafybeie7nvrlwxqkmvj6e3mse5qdvmsozmghccqd7fdxtck6dbhcxt3le4.ipfs.nftstorage.link"
+                  // if the user doesn't have an avatar, use the fallback pfp, stored on NFT.storage 🐛✨🌈
+                  // "https://bafybeie7nvrlwxqkmvj6e3mse5qdvmsozmghccqd7fdxtck6dbhcxt3le4.ipfs.nftstorage.link"
+                  // note: the image is served lightning using Saturn's CDN
+                  fallbackSrc="/ipfs/bafybeie7nvrlwxqkmvj6e3mse5qdvmsozmghccqd7fdxtck6dbhcxt3le4"
                   marginRight={isMobile ? 2 : 4}
                 />
               </a>
