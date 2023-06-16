@@ -7,6 +7,7 @@ import {
   Image,
   VStack,
   Tooltip,
+  Spinner,
 } from '@chakra-ui/react';
 import { getPublicClient } from '@wagmi/core';
 import { isMobile } from 'react-device-detect';
@@ -381,6 +382,9 @@ function LoggedInPage() {
           </VStack>
         </Card>
       )}
+
+      {(!address || !cards) && <Spinner marginTop={20} size={'xl'} />}
+
       {cards && cards.length == 0 && (
         <Text textAlign="left">
           Get started with Wallet OTP by adding your first 2FA secret
