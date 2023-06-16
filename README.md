@@ -1,16 +1,19 @@
 # Wallet OTP (One Time Password)
 
-Wallet OTP is a One Time Password Authenticator built by [Steph | oceans404.eth](https://twitter.com/0ceans404) during [HackFS 2023](https://ethglobal.com/events/hackfs2023). The Wallet OTP dapp works on any device with a user interface and wallet connection (phones, tablets, desktop, your tesla...)
+Wallet OTP is a One Time Password Authenticator dapp built during [HackFS 2023](https://ethglobal.com/events/hackfs2023). Wallet OTP works on any device with a user interface and wallet connection (phones, tablets, desktop, your tesla...)
 
 Check out the 👛 [Wallet OTP - EthGlobal Showcase Page](https://ethglobal.com/showcase/wallet-otp-one-time-password-pp9gx)
+
+Wallet OTP app is live: https://wallet-otp.on.fleek.co
+
+![1](https://github.com/oceans404/wallet-otp/assets/91382964/f7eeee09-04cf-4f28-8b3e-140241874b30)
+
 
 ---
 
 Wallet OTP provides decentralized storage of your 2FA secrets with public-key encryption so that **you and only you** can generate dynamic OTP (one time password) tokens that let you log in to any web2 or web3 service with your wallet.
 
 Sign in with your wallet to encrypt and store your 2FA secrets for any web2 or web3 account (Instagram, Gmail, Tiktok, Kraken, Coinbase, etc). Then when you need to authenticate with your second auth factor, use the Wallet OTP app to get a dynamic OTP based on your secret.
-
-The Wallet OTP app is a work in progress: https://wallet-otp.on.fleek.co/ - the hackathon ends June 19, 2023
 
 ---
 
@@ -39,4 +42,4 @@ Anyway, with Wallet OTP even if you get a new phone or laptop, you keep 2FA acce
 
 ### 3. Vibes
 
-🪩💖
+🪩💖 built with love by [Steph | oceans404.eth](https://twitter.com/0ceans404) 
