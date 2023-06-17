@@ -12,7 +12,7 @@ import {
 import { getPublicClient } from '@wagmi/core';
 import { isMobile } from 'react-device-detect';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { CopyIcon } from '@chakra-ui/icons';
+import { CopyIcon, CheckCircleIcon } from '@chakra-ui/icons';
 import * as LitJsSdk from '@lit-protocol/lit-node-client';
 
 import { useAccount, useDisconnect, useEnsName } from 'wagmi';
@@ -397,10 +397,13 @@ function LoggedInPage() {
                   boxSize={isMobile ? '80px' : '100px'}
                   // if the user has an ENS with a set avatar, the pfp is their avatar
                   src={ensAvatar}
-                  // if the user doesn't have an avatar, use the fallback pfp, stored on NFT.storage 🐛✨🌈
-                  // "https://bafybeie7nvrlwxqkmvj6e3mse5qdvmsozmghccqd7fdxtck6dbhcxt3le4.ipfs.nftstorage.link"
-                  // note: the image is served lightning using Saturn's CDN
-                  fallbackSrc={`/ipfs/${themeData.fallbackPfpIpfsCid}`}
+                  fallbackSrc={
+                    isMobile
+                      ? // if the user doesn't have an avatar, use the fallback pfp, stored on NFT.storage 🐛✨🌈
+                        `https://${themeData.fallbackPfpIpfsCid}.ipfs.nftstorage.link`
+                      : // on desktop, the image is served lighting fast with a custom service worker using Saturn's CDN
+                        `/ipfs/${themeData.fallbackPfpIpfsCid}`
+                  }
                   marginRight={isMobile ? 2 : 4}
                 />
               </a>
@@ -416,6 +419,11 @@ function LoggedInPage() {
                     ) : (
                       'anon'
                     )}{' '}
+                    {theme === 'apecoinDao' && (
+                      <Text fontSize={'10px'} color={themeData.color2}>
+                        ApecoinDAO Member <CheckCircleIcon marginLeft={1} />
+                      </Text>
+                    )}
                   </strong>
                 </Text>
 

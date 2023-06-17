@@ -91,6 +91,10 @@ function AddSecret({ saveSecret, themeData }) {
         },
         {
           /* your options or returnDetailedScanResult: true if you're not specifying any other options */
+          highlightCodeOutline: true,
+          highlightScanRegion: true,
+          preferredCamera: 'environment',
+          onDecodeError: error => alert(error),
         }
       );
       qrScanner.start();
