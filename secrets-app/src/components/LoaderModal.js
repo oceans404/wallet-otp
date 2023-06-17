@@ -10,8 +10,9 @@ import {
   ModalHeader,
 } from '@chakra-ui/react';
 
-function LoaderModal({ open, message }) {
+function LoaderModal({ open, message, tableData }) {
   const { onClose } = useDisclosure();
+  console.log('tableData', tableData);
   return (
     <>
       <Modal isOpen={open} onClose={onClose}>

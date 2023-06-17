@@ -11,7 +11,7 @@ import {
 import { ViewIcon, CopyIcon } from '@chakra-ui/icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-function SecretPopover({ secret, isDemo, linkToEncodedData }) {
+function SecretPopover({ secret, isDemo, linkToEncodedData, themeData }) {
   return (
     secret && (
       <Popover>
@@ -24,7 +24,7 @@ function SecretPopover({ secret, isDemo, linkToEncodedData }) {
           <PopoverArrow />
           <PopoverCloseButton />
           <PopoverHeader>{isDemo && 'Demo '}2FA secret</PopoverHeader>
-          <PopoverBody color="#FF0080">
+          <PopoverBody color={themeData.textHighlight}>
             <p>
               {secret.slice(0, 9)} .... {secret.slice(-9)}
             </p>

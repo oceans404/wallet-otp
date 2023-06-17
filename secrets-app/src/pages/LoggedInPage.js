@@ -22,6 +22,11 @@ import * as eth from '@polybase/eth';
 import AddSecret from '../components/AddSecret';
 import ServiceCard from '../components/ServiceCard';
 import LoaderModal from '../components/LoaderModal';
+import { getThemeData } from '../theme';
+import {
+  checkIfApecoinTokenHolder,
+  checkIfStakingApecoin,
+} from '../apecoin/checkApecoinHolder';
 
 function LoggedInPage() {
   const { address, isConnected } = useAccount();
@@ -38,7 +43,14 @@ function LoggedInPage() {
   const [authSig, setAuthSig] = useState();
   const [polybaseLoading, setPolybaseLoading] = useState(false);
   const [polybaseRetrying, setPolybaseRetrying] = useState(false);
+  const [current2fa, setCurrent2fa] = useState();
   const [ensAvatar, setEnsAvatar] = useState();
+  const [theme, setTheme] = useState('default');
+  const [themeData, setThemeData] = useState(getThemeData(theme));
+
+  useEffect(() => {
+    setThemeData(getThemeData(theme));
+  }, [theme]);
 
   const [litClient, setLitClient] = useState();
 
@@ -56,15 +68,33 @@ function LoggedInPage() {
     },
   ];
 
-  // todo: check if wallet is part of data dao
-  // todo: if it's part of data dao get mapping of wallet address -> encrypted collection on Polybase
-
   useEffect(() => {
+    const checkApecoinDaoTheme = async () => {
+      const isApecoinHolder = await checkIfApecoinTokenHolder(address);
+      const isApecoinHolderTestnet = await checkIfApecoinTokenHolder(
+        address,
+        'testnet'
+      );
+      const isApecoinStaker = await checkIfStakingApecoin(address);
+      console.log(
+        'apecoin',
+        isApecoinHolder,
+        isApecoinHolderTestnet,
+        isApecoinStaker
+      );
+      setTheme(
+        isApecoinHolder || isApecoinStaker || isApecoinHolderTestnet
+          ? 'apecoinDao'
+          : 'default'
+      );
+    };
+
     const connectToLit = async () => {
       const client = new LitJsSdk.LitNodeClient();
       await client.connect();
       return client;
     };
+    checkApecoinDaoTheme();
     connectToLit().then(async lc => {
       setLitClient(lc);
 
@@ -155,11 +185,12 @@ function LoggedInPage() {
     'pk/0x0a4f8fcf98d7e5745ed5911b7c6f864e92a0016539d9ed46221d1e378ceb1e2498fc2390ee81ab65fd6a6e9255d334bcbed14f25db92faf2c7c4e785181675dc/TestTokens'
   );
   const [collectionReference] = useState('Keys');
-  const [appId] = useState('wallet-otp');
+  const [appId] = useState('wo');
 
   // need signer in order to create Polybase records
   const [addedSigner, setAddedSigner] = useState(false);
   const [cards, setCards] = useState();
+  const [filteredCards, setFilteredCards] = useState(cards);
 
   const deleteRecord = async id => {
     const record = await polybaseDb
@@ -214,9 +245,9 @@ function LoggedInPage() {
       setCards(cards => [
         {
           id,
-          service: service.Service,
-          account: account.Account,
-          secret: secret.Secret,
+          service: service.service,
+          account: account.account,
+          secret: secret.secret,
         },
         ...cards,
       ]);
@@ -234,14 +265,32 @@ function LoggedInPage() {
     setPolybaseLoading(false);
   };
 
-  const encryptAndSaveSecret = async ({ Service, Account, Secret }) => {
-    const encryptedService = await encryptWithLit(Service);
-    const encryptedAccount = await encryptWithLit(Account);
-    const encryptedSecret = await encryptWithLit(Secret);
+  const encryptAndSaveSecret = async ({ service, account, secret }) => {
+    const encryptedService = await encryptWithLit(service);
+    const encryptedAccount = await encryptWithLit(account);
+    const encryptedSecret = await encryptWithLit(secret);
+
+    const full2fa = {
+      service: {
+        decrypted: service,
+        encrypted: encryptedService,
+      },
+      account: {
+        decrypted: account,
+        encrypted: encryptedAccount,
+      },
+      secret: {
+        decrypted: secret,
+        encrypted: encryptedSecret,
+      },
+    };
+
+    setCurrent2fa(full2fa);
+
     createPolybaseRecord(
-      { ...encryptedService, Service },
-      { ...encryptedAccount, Account },
-      { ...encryptedSecret, Secret }
+      { ...encryptedService, service },
+      { ...encryptedAccount, account },
+      { ...encryptedSecret, secret }
     );
   };
 
@@ -284,7 +333,16 @@ function LoggedInPage() {
       };
       getEncryptedDataFromPolybase().then(async recs => {
         await decryptPolybaseRecs(recs).then(decryptedRecs => {
-          setCards(decryptedRecs);
+          const serviceSortedRecs = decryptedRecs.sort((a, b) => {
+            // if same service, alphabetize by account
+            if (a.service.toLowerCase() === b.service.toLowerCase()) {
+              return a.account.toLowerCase() > b.account.toLowerCase() ? 1 : -1;
+            } else {
+              // alphabetize by service
+              return a.service.toLowerCase() > b.service.toLowerCase() ? 1 : -1;
+            }
+          });
+          setCards(serviceSortedRecs);
         });
       });
     }
@@ -304,12 +362,13 @@ function LoggedInPage() {
             ? 'Sign the message in your wallet to encrypt and save your 2FA secret'
             : 'Still polling Polybase, please sign again.'
         }
+        tableData={current2fa}
       />
       {address && (
         <HStack justifyContent={'space-between'}>
           <div>
             <Text
-              bgGradient="linear(to-l, #7928CA, #FF0080)"
+              bgGradient={`linear(to-l, ${themeData.color2}, ${themeData.color1})`}
               bgClip="text"
               fontSize="4xl"
               fontWeight="bold"
@@ -318,10 +377,12 @@ function LoggedInPage() {
             </Text>
           </div>
 
-          {/* <BrowserView> */}
-          <div>
-            <AddSecret saveSecret={encryptAndSaveSecret} />
-          </div>
+          {cards && (
+            <AddSecret
+              saveSecret={encryptAndSaveSecret}
+              themeData={themeData}
+            />
+          )}
           {/* </BrowserView> */}
         </HStack>
       )}
@@ -339,7 +400,7 @@ function LoggedInPage() {
                   // if the user doesn't have an avatar, use the fallback pfp, stored on NFT.storage 🐛✨🌈
                   // "https://bafybeie7nvrlwxqkmvj6e3mse5qdvmsozmghccqd7fdxtck6dbhcxt3le4.ipfs.nftstorage.link"
                   // note: the image is served lightning using Saturn's CDN
-                  fallbackSrc="/ipfs/bafybeie7nvrlwxqkmvj6e3mse5qdvmsozmghccqd7fdxtck6dbhcxt3le4"
+                  fallbackSrc={`/ipfs/${themeData.fallbackPfpIpfsCid}`}
                   marginRight={isMobile ? 2 : 4}
                 />
               </a>
@@ -404,6 +465,7 @@ function LoggedInPage() {
             service={c.service}
             account={c.account}
             secret={c.secret}
+            themeData={themeData}
           />
         ))}
     </>

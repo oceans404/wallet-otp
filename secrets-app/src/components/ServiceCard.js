@@ -16,7 +16,15 @@ import { useState, useEffect } from 'react';
 import SecretPopover from './SecretPopover';
 import { openInNewTab } from '../helper';
 
-function ServiceCard({ service, account, secret, isDemo, linkToEncodedData }) {
+function ServiceCard({
+  service,
+  account,
+  secret,
+  isDemo,
+  linkToEncodedData,
+  themeData,
+}) {
+  const { color1, color2, textHighlight } = themeData;
   const [timerRefresh, setTimerRefresh] = useState(0);
   const [code, setCode] = useState('******');
   // starting duration offset from current time (new code at 0/60 and 30 seconds)
@@ -52,8 +60,8 @@ function ServiceCard({ service, account, secret, isDemo, linkToEncodedData }) {
         <svg>
           <defs>
             <linearGradient id="your-unique-id" x1="1" y1="0" x2="0" y2="0">
-              <stop offset="5%" stopColor="#7928CA" />
-              <stop offset="95%" stopColor="#FF0080" />
+              <stop offset="5%" stopColor={color2} />
+              <stop offset="95%" stopColor={color1} />
             </linearGradient>
           </defs>
         </svg>
@@ -74,7 +82,7 @@ function ServiceCard({ service, account, secret, isDemo, linkToEncodedData }) {
             >
               {({ remainingTime }) => (
                 <VStack gap={0}>
-                  <Text fontSize={'24px'} color={'#FF0080'} m={0} p={0}>
+                  <Text fontSize={'24px'} color={textHighlight} m={0} p={0}>
                     <strong>{spaceOutCode(code)}</strong>
                   </Text>
                   <Text color={''} fontSize={'13px'} m={0} p={0}>
@@ -92,6 +100,7 @@ function ServiceCard({ service, account, secret, isDemo, linkToEncodedData }) {
           secret={secret}
           isDemo={isDemo}
           linkToEncodedData={linkToEncodedData}
+          themeData={themeData}
         />
         {linkToEncodedData && (
           <Button

@@ -6,13 +6,15 @@ import ServiceCard from '../components/ServiceCard';
 import { Web3Button } from '@web3modal/react';
 import { isBrowser } from 'react-device-detect';
 import { openInNewTab } from '../helper';
+import { getThemeData } from '../theme';
 
 function LandingPage() {
+  const themeData = getThemeData('default');
   return (
     <>
       <Container>
         <Text
-          bgGradient="linear(to-l, #7928CA, #FF0080)"
+          bgGradient={`linear(to-l, ${themeData.color2}, ${themeData.color1})`}
           bgClip="text"
           fontSize="5xl"
           fontWeight="bold"
@@ -86,7 +88,7 @@ function LandingPage() {
 
       <div>
         <Text
-          bgGradient="linear(to-l, #7928CA, #FF0080)"
+          bgGradient={`linear(to-l, ${themeData.color2}, ${themeData.color1})`}
           bgClip="text"
           fontSize="2xl"
           fontWeight="bold"
@@ -111,6 +113,7 @@ function LandingPage() {
             service={c.service}
             account={c.account}
             secret={c.secret}
+            themeData={themeData}
           />
         ))}
       </div>
