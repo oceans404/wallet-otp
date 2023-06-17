@@ -461,7 +461,15 @@ function LoggedInPage() {
 
       {cards && cards.length == 0 && (
         <Text textAlign="left">
-          Get started with Wallet OTP by adding your first 2FA secret
+          Get started with Wallet OTP by adding your first 2FA secret. Need
+          help?{' '}
+          <a
+            style={{ textDecoration: 'underline' }}
+            target="_blank"
+            href="https://www.notion.so/oceans404/How-to-add-2FA-codes-from-your-web2-and-web3-apps-to-the-Wallet-OTP-Authenticator-App-3152a69aa47e4f02ab347c60006bd9be?pvs=4"
+          >
+            Read the docs
+          </a>
         </Text>
       )}
       {/* Returning user with secrets*/}

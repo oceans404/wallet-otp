@@ -94,7 +94,7 @@ function AddSecret({ saveSecret, themeData }) {
           highlightCodeOutline: true,
           highlightScanRegion: true,
           preferredCamera: 'environment',
-          onDecodeError: error => alert(error),
+          // onDecodeError: error => alert(error),
         }
       );
       qrScanner.start();
@@ -103,6 +103,19 @@ function AddSecret({ saveSecret, themeData }) {
   }, [showQrScanner, secretGetVia]);
 
   const title = '2FA secret';
+
+  const helpDocs = (
+    <Text fontSize={'10px'} marginTop={1}>
+      Need help finding your 2FA secret?{' '}
+      <a
+        style={{ textDecoration: 'underline' }}
+        target="_blank"
+        href="https://www.notion.so/oceans404/How-to-add-2FA-codes-from-your-web2-and-web3-apps-to-the-Wallet-OTP-Authenticator-App-3152a69aa47e4f02ab347c60006bd9be?pvs=4"
+      >
+        Check out the docs
+      </a>
+    </Text>
+  );
 
   return (
     <>
@@ -113,7 +126,10 @@ function AddSecret({ saveSecret, themeData }) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Add a new {title}</ModalHeader>
+          <ModalHeader>
+            <Text>Add a new {title}</Text>
+            {helpDocs}
+          </ModalHeader>
           <ModalCloseButton />
           {secretGetVia === GET_SECRET_VIA.UNDECIDED ? (
             <>

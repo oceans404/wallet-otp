@@ -4,27 +4,25 @@ import {
   Modal,
   ModalOverlay,
   Spinner,
-  ModalCloseButton,
-  ModalBody,
   Center,
   ModalHeader,
 } from '@chakra-ui/react';
+import EncryptionTable from './EncryptionTable';
 
 function LoaderModal({ open, message, tableData }) {
   const { onClose } = useDisclosure();
   console.log('tableData', tableData);
   return (
-    <>
-      <Modal isOpen={open} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent padding={10}>
-          <ModalHeader>{message}</ModalHeader>
-          <Center marginTop={10}>
-            <Spinner size="xl" />
-          </Center>
-        </ModalContent>
-      </Modal>
-    </>
+    <Modal isOpen={open} onClose={onClose} width={'100%'} size={'xl'}>
+      <ModalOverlay />
+      <ModalContent padding={5} width={'100%'}>
+        <ModalHeader>{message}</ModalHeader>
+        <Center my={10}>
+          <Spinner size="xl" />
+        </Center>
+        <EncryptionTable tableData={tableData} />
+      </ModalContent>
+    </Modal>
   );
 }
 export default LoaderModal;
