@@ -27,6 +27,7 @@ import {
   checkIfApecoinTokenHolder,
   checkIfStakingApecoin,
 } from '../apecoin/checkApecoinHolder';
+import { imgProviderSrc } from '../ipfsHelpers';
 
 function LoggedInPage() {
   const { address, isConnected } = useAccount();
@@ -76,12 +77,6 @@ function LoggedInPage() {
         'testnet'
       );
       const isApecoinStaker = await checkIfStakingApecoin(address);
-      console.log(
-        'apecoin',
-        isApecoinHolder,
-        isApecoinHolderTestnet,
-        isApecoinStaker
-      );
       setTheme(
         isApecoinHolder || isApecoinStaker || isApecoinHolderTestnet
           ? 'apecoinDao'
@@ -397,13 +392,10 @@ function LoggedInPage() {
                   boxSize={isMobile ? '80px' : '100px'}
                   // if the user has an ENS with a set avatar, the pfp is their avatar
                   src={ensAvatar}
-                  fallbackSrc={
-                    isMobile
-                      ? // if the user doesn't have an avatar, use the fallback pfp, stored on NFT.storage 🐛✨🌈
-                        `https://${themeData.fallbackPfpIpfsCid}.ipfs.nftstorage.link`
-                      : // on desktop, the image is served lighting fast with a custom service worker using Saturn's CDN
-                        `/ipfs/${themeData.fallbackPfpIpfsCid}`
-                  }
+                  fallbackSrc={imgProviderSrc(
+                    isMobile,
+                    themeData.fallbackPfpIpfsCid
+                  )}
                   marginRight={isMobile ? 2 : 4}
                 />
               </a>

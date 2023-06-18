@@ -56,7 +56,6 @@ export const checkIfStakingApecoin = async address => {
   );
   try {
     const stakes = await contract.getAllStakes(address);
-    console.log('apecoin', stakes);
     return Object.keys(stakes).length > 1; //boolean
   } catch (error) {
     console.error('Error calling function:', error);

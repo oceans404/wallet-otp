@@ -11,7 +11,6 @@ import EncryptionTable from './EncryptionTable';
 
 function LoaderModal({ open, message, tableData }) {
   const { onClose } = useDisclosure();
-  console.log('tableData', tableData);
   return (
     <Modal isOpen={open} onClose={onClose} width={'100%'} size={'xl'}>
       <ModalOverlay />
