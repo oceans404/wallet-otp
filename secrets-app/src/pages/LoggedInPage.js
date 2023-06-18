@@ -9,13 +9,16 @@ import {
   Tooltip,
   Spinner,
 } from '@chakra-ui/react';
-import { getPublicClient } from '@wagmi/core';
+
 import { isMobile } from 'react-device-detect';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { CopyIcon, CheckCircleIcon } from '@chakra-ui/icons';
 import * as LitJsSdk from '@lit-protocol/lit-node-client';
 
-import { useAccount, useDisconnect, useEnsName } from 'wagmi';
+import { createPublicClient, http } from 'viem';
+import { mainnet } from 'viem/chains';
+
+import { useAccount, useDisconnect } from 'wagmi';
 import { Polybase } from '@polybase/client';
 import * as eth from '@polybase/eth';
 
@@ -28,16 +31,14 @@ import {
   checkIfStakingApecoin,
 } from '../apecoin/checkApecoinHolder';
 import { imgProviderSrc } from '../ipfsHelpers';
+import { timeout } from '../helper';
 
 function LoggedInPage() {
   const { address, isConnected } = useAccount();
-  const { data: ensName } = useEnsName({
-    address,
+  const publicClient = createPublicClient({
+    chain: mainnet,
+    transport: http(),
   });
-  const ensProfile = ensName
-    ? `https://app.ens.domains/${ensName}`
-    : 'https://app.ens.domains/';
-  const publicClient = getPublicClient();
 
   const { disconnect } = useDisconnect();
   const [chain] = useState('ethereum');
@@ -45,6 +46,8 @@ function LoggedInPage() {
   const [polybaseLoading, setPolybaseLoading] = useState(false);
   const [polybaseRetrying, setPolybaseRetrying] = useState(false);
   const [current2fa, setCurrent2fa] = useState();
+  const [ensName, setEnsName] = useState();
+  const [ensProfile, setEnsProfile] = useState();
   const [ensAvatar, setEnsAvatar] = useState();
   const [theme, setTheme] = useState('default');
   const [themeData, setThemeData] = useState(getThemeData(theme));
@@ -150,6 +153,7 @@ function LoggedInPage() {
       const dr = await decryptRec(rec);
       decryptedPolybaseRecs.push(dr);
     }
+
     return decryptedPolybaseRecs;
   };
 
@@ -304,16 +308,34 @@ function LoggedInPage() {
           return { h: 'eth-personal-sign', sig };
         });
 
-        const setAvatar = async () => {
-          if (ensName) {
+        const checkEns = async () => {
+          if (publicClient && address) {
+            try {
+              const name = await publicClient.getEnsName({
+                address,
+              });
+
+              setEnsName(name);
+              return name;
+            } catch (err) {
+              console.log(err);
+            }
+          }
+        };
+
+        const setAvatar = async name => {
+          if (name) {
             const avatarSrc = await publicClient.getEnsAvatar({
-              name: ensName,
+              name,
             });
             setEnsAvatar(avatarSrc);
           }
         };
 
-        setAvatar();
+        const ensName = await checkEns().then(
+          async name => await setAvatar(name)
+        );
+        // const ava = await setAvatar(ensName);
         setPolygbaseDb(db);
       };
 
@@ -324,19 +346,27 @@ function LoggedInPage() {
   useEffect(() => {
     if (addedSigner && litClient && authSig) {
       const getEncryptedDataFromPolybase = async () => {
-        return await listRecordsWhereAppIdMatches();
+        const records = await listRecordsWhereAppIdMatches();
+        await timeout(1000);
+        return records;
       };
       getEncryptedDataFromPolybase().then(async recs => {
         await decryptPolybaseRecs(recs).then(decryptedRecs => {
-          const serviceSortedRecs = decryptedRecs.sort((a, b) => {
-            // if same service, alphabetize by account
-            if (a.service.toLowerCase() === b.service.toLowerCase()) {
-              return a.account.toLowerCase() > b.account.toLowerCase() ? 1 : -1;
-            } else {
-              // alphabetize by service
-              return a.service.toLowerCase() > b.service.toLowerCase() ? 1 : -1;
-            }
-          });
+          const serviceSortedRecs =
+            decryptedRecs &&
+            decryptedRecs.sort((a, b) => {
+              // if same service, alphabetize by account
+              if (a.service.toLowerCase() === b.service.toLowerCase()) {
+                return a.account.toLowerCase() > b.account.toLowerCase()
+                  ? 1
+                  : -1;
+              } else {
+                // alphabetize by service
+                return a.service.toLowerCase() > b.service.toLowerCase()
+                  ? 1
+                  : -1;
+              }
+            });
           setCards(serviceSortedRecs);
         });
       });
