@@ -6,8 +6,8 @@ Check out the 👛 [Wallet OTP - EthGlobal Showcase Page](https://ethglobal.com/
 
 Wallet OTP app is live: https://wallet-otp.on.fleek.co
 
-![1](https://github.com/oceans404/wallet-otp/assets/91382964/f7eeee09-04cf-4f28-8b3e-140241874b30)
 
+![Wallet OTP deck](https://github.com/oceans404/wallet-otp/assets/91382964/2dae553a-cd86-4cd4-94e0-3ef62b8cd6b6)
 
 ---
 
@@ -49,7 +49,8 @@ Wallet OTP is a wallet encrypted solution for 2FA secret storage so you no longe
 
 ## 🚀 Web3 Details
 
-- Login mechanism: **WalletConnect**'s Web3Modal combined with viem and wagmi React hooks Ethereum address resolution: ENS with the @ensdomains/ensjs library
+- Login mechanism: **WalletConnect**'s Web3Modal combined with viem and wagmi React hooks
+- ENS names: check if a user has an ENS and if so, display their **ENS avatar and name** with the viem library
 - Encryption/decryption: **Lit Protocol** - I didn't use Ceramic or Arweave (default integrations) for storage, so I needed to create a custom Lit integration for Lit <> Polybase that encrypts data using Lit Protocol, uploads it to Polybase, fetches the Lit encrypted data from Polybase, and decrypts using Lit Protocol
 - Decentralized Storage: **public-key-write-gated Polybase collections of Lit encrypted records**
 - Known issue that will be fixed by WalletConnect by June 23: Your browser needs to have a wallet (window.ethereum) or wallet extension and you have to sign more than once. When working with WalletConnect, Polybase, and Lit signing, I tried to optimize the UX to prevent duplicate signing in and signing by injecting WalletConnect into Polybase and Lit for auth, but WalletConnect is between V1 and V2. WC V2 has signing/auth capabilities, but doesn't hasn't completed integration with any major mainstream wallets. V1 doesn't have a working auth/sign api, but supports major mainstream wallets (coinbase, metamask, trust, etc.) Because of this, the WalletConnect logged in user still has to sign to prove wallet ownership for Lit and to post new records for Polybase.
