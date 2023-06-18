@@ -8,6 +8,9 @@ import {
   VStack,
   Tooltip,
   Spinner,
+  Wrap,
+  WrapItem,
+  useMediaQuery,
 } from '@chakra-ui/react';
 
 import { isMobile } from 'react-device-detect';
@@ -51,6 +54,8 @@ function LoggedInPage() {
   const [ensAvatar, setEnsAvatar] = useState();
   const [theme, setTheme] = useState('default');
   const [themeData, setThemeData] = useState(getThemeData(theme));
+
+  const [isLargerThan700] = useMediaQuery('(min-width: 700px)');
 
   useEffect(() => {
     setThemeData(getThemeData(theme));
@@ -184,7 +189,7 @@ function LoggedInPage() {
     'pk/0x0a4f8fcf98d7e5745ed5911b7c6f864e92a0016539d9ed46221d1e378ceb1e2498fc2390ee81ab65fd6a6e9255d334bcbed14f25db92faf2c7c4e785181675dc/TestTokens'
   );
   const [collectionReference] = useState('Keys');
-  const [appId] = useState('wo');
+  const [appId] = useState('hack-fs');
 
   // need signer in order to create Polybase records
   const [addedSigner, setAddedSigner] = useState(false);
@@ -311,7 +316,6 @@ function LoggedInPage() {
         });
 
         const checkEns = async () => {
-          console.log('publicClient', publicClient, address);
           if (publicClient && address) {
             try {
               const name = await publicClient.getEnsName({
@@ -498,17 +502,22 @@ function LoggedInPage() {
         </Text>
       )}
       {/* Returning user with secrets*/}
-      {cards &&
-        cards.map(c => (
-          <ServiceCard
-            key={c.id}
-            linkToEncodedData={`https://testnet.polybase.xyz/v0/collections/${encodedNamespaceDb}/records/${c.id}`}
-            service={c.service}
-            account={c.account}
-            secret={c.secret}
-            themeData={themeData}
-          />
-        ))}
+
+      <Wrap justifyContent={'space-between'} id="logged-in-wrap">
+        {cards &&
+          cards.map(c => (
+            <WrapItem width={isMobile || !isLargerThan700 ? '100%' : '49%'}>
+              <ServiceCard
+                key={c.secret}
+                linkToEncodedData={`https://testnet.polybase.xyz/v0/collections/${encodedNamespaceDb}/records/${c.id}`}
+                service={c.service}
+                account={c.account}
+                secret={c.secret}
+                themeData={themeData}
+              />
+            </WrapItem>
+          ))}
+      </Wrap>
     </>
   );
 }

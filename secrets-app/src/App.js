@@ -25,7 +25,7 @@ function App() {
       <Box textAlign="center" fontSize="xl">
         <Grid minH="100vh" p={3}>
           <VStack spacing={8}>
-            <Container>
+            <Container minWidth={'80%'} maxWidth={'700px'}>
               {isConnected ? <LoggedInPage /> : <LandingPage />}
             </Container>
           </VStack>

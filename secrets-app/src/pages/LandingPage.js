@@ -7,6 +7,7 @@ import {
   Image,
   HStack,
   Wrap,
+  WrapItem,
 } from '@chakra-ui/react';
 import QRCode from 'react-qr-code';
 import { isMobile } from 'react-device-detect';
@@ -41,7 +42,7 @@ function LandingPage() {
           bgClip="text"
           fontSize="5xl"
           fontWeight="bold"
-          marginTop={4}
+          marginTop={2}
         >
           Wallet OTP
         </Text>
@@ -50,7 +51,7 @@ function LandingPage() {
           is a decentralized, wallet encrypted, 2FA storage solution
         </Text>
         <br></br>
-        <Text fontSize={'14px'}>
+        <Text fontSize={'12px'}>
           Two-factor authentication (2FA) adds an additional layer of protection
           beyond passwords to your web2 and web3 accounts. Wallet OTP is{' '}
           <a
@@ -61,14 +62,16 @@ function LandingPage() {
             a free and completely open source public good
           </a>{' '}
           that protects all your accounts by encrypting your 2FA secrets with
-          your Wallet's public key before storing on decentralized storage. When
-          you need 2FA, Wallet OTP generates new dynamic 6 digit OTPs (one time
-          passwords) every 30 seconds. That way, you and only you can use Wallet
-          OTP to log in to accounts across the web. Sign in to use Wallet OTP ⬇️
+          your Wallet's public key before storing on decentralized storage.
+          <br />
+          When you need 2FA, Wallet OTP generates new dynamic 6 digit OTPs (one
+          time passwords) every 30 seconds. That way, you and only you can use
+          Wallet OTP to log in to accounts across the web. Sign in to use Wallet
+          OTP ⬇️
         </Text>
-        <Center my={6}>
+        <Center my={3}>
           {window.ethereum && (
-            <Button padding={'0'} my={4} background={'#7928CA'}>
+            <Button padding={'0'} my={2} background={'#7928CA'}>
               <Web3Button
                 icon="hide"
                 avatar="hide"
@@ -115,7 +118,7 @@ function LandingPage() {
               Wallet OTP has a decentralized stack powered by
             </Text>
             <HStack>
-              <Wrap justifyContent={'space-around'}>
+              <Wrap justify={'space-evenly'}>
                 {logo(ipfsCids.ens, 'https://ens.domains/')}
                 {logo(ipfsCids.lit, 'https://litprotocol.com/')}
                 {logo(ipfsCids.polybase, 'https://polybase.xyz/')}
@@ -152,18 +155,25 @@ function LandingPage() {
           dynamically generated OTPs match OTPs from any other service. 👯‍♀️
         </Text>
       </div>
-      <div>
+      <br></br>
+      <Wrap justify={'center'} spacing="20px" w="100%">
         {test2FAData.map(c => (
-          <ServiceCard
-            isDemo
-            key={c.secret}
-            service={c.service}
-            account={c.account}
-            secret={c.secret}
-            themeData={themeData}
-          />
+          <WrapItem
+            boxSizing="border-box"
+            justifyContent={'center'}
+            width={isMobile ? '100%' : '48%'}
+          >
+            <ServiceCard
+              isDemo
+              key={c.secret}
+              service={c.service}
+              account={c.account}
+              secret={c.secret}
+              themeData={themeData}
+            />
+          </WrapItem>
         ))}
-      </div>
+      </Wrap>
     </>
   );
 }

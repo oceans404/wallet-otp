@@ -15,6 +15,7 @@ import * as authenticator from 'authenticator';
 import { useState, useEffect } from 'react';
 import SecretPopover from './SecretPopover';
 import { openInNewTab } from '../helper';
+import { isMobile } from 'react-device-detect';
 
 function ServiceCard({
   service,
@@ -55,7 +56,7 @@ function ServiceCard({
   const spaceOutCode = num => `${num.slice(0, 3)} ${num.slice(3)}`;
 
   return (
-    <Card width={'100%'} my={4}>
+    <Card my={2} width={'100%'}>
       <Box height={0}>
         <svg>
           <defs>
