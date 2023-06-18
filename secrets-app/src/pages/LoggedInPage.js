@@ -213,6 +213,8 @@ function LoggedInPage() {
         .where('appId', '==', appId)
         .get();
       return records.data.map(d => d.data);
+    } else {
+      return [];
     }
   };
 
@@ -309,6 +311,7 @@ function LoggedInPage() {
         });
 
         const checkEns = async () => {
+          console.log('publicClient', publicClient, address);
           if (publicClient && address) {
             try {
               const name = await publicClient.getEnsName({
@@ -344,7 +347,7 @@ function LoggedInPage() {
   }, [isConnected, address]);
 
   useEffect(() => {
-    if (addedSigner && litClient && authSig) {
+    if (polybaseDb && addedSigner && litClient && authSig) {
       const getEncryptedDataFromPolybase = async () => {
         const records = await listRecordsWhereAppIdMatches();
         await timeout(1000);
@@ -371,7 +374,7 @@ function LoggedInPage() {
         });
       });
     }
-  }, [addedSigner, litClient, authSig]);
+  }, [addedSigner, litClient, authSig, polybaseDb]);
 
   const shortAddress = addr => `${addr.slice(0, 5)}...${addr.slice(-4)}`;
   const encodedNamespaceDb = encodeURIComponent(
