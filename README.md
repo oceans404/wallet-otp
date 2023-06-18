@@ -9,7 +9,10 @@ Wallet OTP app is live: https://wallet-otp.on.fleek.co
 
 ![Wallet OTP deck](https://github.com/oceans404/wallet-otp/assets/91382964/2dae553a-cd86-4cd4-94e0-3ef62b8cd6b6)
 
----
+
+## Demo
+
+https://github.com/oceans404/wallet-otp/assets/91382964/117ce1e7-4d6e-44c8-b49c-fd04ebaeff84
 
 Wallet OTP provides decentralized storage of your 2FA secrets with public-key encryption so that **you and only you** can generate dynamic OTP (one time password) tokens that let you log in to any web2 or web3 service with your wallet.
 
@@ -17,7 +20,15 @@ Sign in with your wallet to encrypt and store your 2FA secrets for any web2 or w
 
 ---
 
-## But I already use Twilio's Authy or Google's Authenticator app for this. Why should I use Wallet OTP instead?
+## User Flow
+
+
+![user flow](https://github.com/oceans404/wallet-otp/assets/91382964/55e55564-de37-4167-9cbf-25e05a533323)
+
+
+---
+
+## I already use Twilio's Authy or Google's Authenticator app for this. Why should I use Wallet OTP instead?
 
 ### 1. Privacy and security
 
