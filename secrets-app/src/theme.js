@@ -9,14 +9,6 @@ const colorTheme = {
     button: '#7928CA',
     fallbackPfpIpfsCid: ipfsCids.walletOtpPfp,
   },
-  apecoinDao: {
-    color1: '#0035EB',
-    color2: '#23BDFF',
-    text: '#ffffff',
-    textHighlight: '#2556FF',
-    button: '#0035EB',
-    fallbackPfpIpfsCid: ipfsCids.apecoin,
-  },
 };
 
 export const getThemeData = (theme = 'default') => colorTheme[theme];

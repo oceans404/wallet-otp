@@ -16,7 +16,7 @@ import ServiceCard from '../components/ServiceCard';
 import { imgProviderSrc } from '../ipfsHelpers';
 import { ipfsCids } from '../ipfsCids';
 
-import { Web3Button } from '@web3modal/react';
+// import { Web3Button } from '@web3modal/react';
 import { isBrowser } from 'react-device-detect';
 import { openInNewTab } from '../helper';
 import { getThemeData } from '../theme';
@@ -72,11 +72,11 @@ function LandingPage() {
         <Center my={3}>
           {window.ethereum && (
             <Button padding={'0'} my={2} background={'#7928CA'}>
-              <Web3Button
+              {/* <Web3Button
                 icon="hide"
                 avatar="hide"
                 label="Sign in with your wallet"
-              />
+              /> */}
             </Button>
           )}
           {!window.ethereum && (
@@ -117,7 +117,7 @@ function LandingPage() {
             >
               Wallet OTP has a decentralized stack powered by
             </Text>
-            <HStack>
+            {/* <HStack>
               <Wrap justify={'space-evenly'}>
                 {logo(ipfsCids.ens, 'https://ens.domains/')}
                 {logo(ipfsCids.lit, 'https://litprotocol.com/')}
@@ -125,10 +125,9 @@ function LandingPage() {
                 {logo(ipfsCids.fleek, 'https://fleek.co/')}
                 {logo(ipfsCids.nftstorage, 'https://nft.storage/')}
                 {logo(ipfsCids.ipfs, 'https://ipfs.tech/')}
-                {logo(ipfsCids.apecoin, 'https://apecoin.com/')}
                 {logo(ipfsCids.saturn, 'https://saturn.tech/')}
               </Wrap>
-            </HStack>
+            </HStack> */}
           </VStack>
         </Center>
         <br></br>

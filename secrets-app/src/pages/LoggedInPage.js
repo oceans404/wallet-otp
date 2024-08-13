@@ -29,10 +29,6 @@ import AddSecret from '../components/AddSecret';
 import ServiceCard from '../components/ServiceCard';
 import LoaderModal from '../components/LoaderModal';
 import { getThemeData } from '../theme';
-import {
-  checkIfApecoinTokenHolder,
-  checkIfStakingApecoin,
-} from '../apecoin/checkApecoinHolder';
 import { imgProviderSrc } from '../ipfsHelpers';
 import { timeout } from '../helper';
 
@@ -78,26 +74,11 @@ function LoggedInPage() {
   ];
 
   useEffect(() => {
-    const checkApecoinDaoTheme = async () => {
-      const isApecoinHolder = await checkIfApecoinTokenHolder(address);
-      const isApecoinHolderTestnet = await checkIfApecoinTokenHolder(
-        address,
-        'testnet'
-      );
-      const isApecoinStaker = await checkIfStakingApecoin(address);
-      setTheme(
-        isApecoinHolder || isApecoinStaker || isApecoinHolderTestnet
-          ? 'apecoinDao'
-          : 'default'
-      );
-    };
-
     const connectToLit = async () => {
       const client = new LitJsSdk.LitNodeClient();
       await client.connect();
       return client;
     };
-    checkApecoinDaoTheme();
     connectToLit().then(async lc => {
       setLitClient(lc);
 
@@ -448,11 +429,6 @@ function LoggedInPage() {
                     ) : (
                       'anon'
                     )}{' '}
-                    {theme === 'apecoinDao' && (
-                      <Text fontSize={'10px'} color={themeData.color2}>
-                        ApecoinDAO Member <CheckCircleIcon marginLeft={1} />
-                      </Text>
-                    )}
                   </strong>
                 </Text>
 

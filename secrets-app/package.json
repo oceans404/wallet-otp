@@ -7,8 +7,14 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
+    "@lit-protocol/lit-node-client": "^6.4.2",
+    "@polybase/client": "^0.6.6",
+    "@polybase/eth": "^0.6.6",
+    "@tanstack/react-query": "^5.51.23",
+    "@web3modal/wagmi": "^5.0.11",
     "authenticator": "^1.1.5",
     "dotenv": "^16.4.5",
+    "framer-motion": "^11.3.24",
     "html5-qrcode": "^2.3.8",
     "otpauth-uri-parser": "^1.0.2",
     "qr-scanner": "^1.4.2",
@@ -19,9 +25,14 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.52.2",
     "react-icons": "^5.2.1",
-    "react-qr-code": "^2.0.15"
+    "react-qr-code": "^2.0.15",
+    "react-scripts": "^5.0.1",
+    "viem": "^2.19.4",
+    "wagmi": "^2.12.5",
+    "web-vitals": "^4.2.3"
   },
   "devDependencies": {
+    "ajv": "^8.17.1",
     "assert": "^2.0.0",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
@@ -33,6 +44,7 @@
     "react-app-rewired": "^2.2.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
+    "typescript": "^5.0.4",
     "url": "^0.11.0"
   },
   "scripts": {

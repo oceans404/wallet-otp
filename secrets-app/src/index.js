@@ -2,60 +2,67 @@ import { ColorModeScript } from '@chakra-ui/react';
 import React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import * as serviceWorker from './serviceWorker';
-import {
-  EthereumClient,
-  w3mConnectors,
-  w3mProvider,
-} from '@web3modal/ethereum';
-import { Web3Modal } from '@web3modal/react';
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { mainnet, filecoin, polygonMumbai } from 'wagmi/chains';
 
-require('dotenv').config();
+import { createWeb3Modal } from '@web3modal/wagmi/react';
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 
-const chains = [mainnet, filecoin, polygonMumbai];
-const projectId = process.env.REACT_APP_WALLET_CONNECT_ID;
+import { WagmiProvider } from 'wagmi';
+import { arbitrum, mainnet } from 'wagmi/chains';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: w3mConnectors({ projectId, version: 1, chains }),
-  publicClient,
+// 0. Setup queryClient
+const queryClient = new QueryClient();
+
+// 1. Your WalletConnect Cloud project ID
+const projectId = '6b694f70a76291ea2e756326b19540e0';
+
+// 2. Create wagmiConfig
+const metadata = {
+  name: 'auth',
+  description: 'AppKit Example',
+  url: 'https://web3modal.com', // origin must match your domain & subdomain
+  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+};
+
+const chains = [mainnet, arbitrum];
+const config = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata,
+  auth: {
+    email: true, // default to true
+    socials: ['google', 'x', 'github', 'farcaster'],
+    showWallets: true, // default to true
+    walletFeatures: true, // default to true
+  },
 });
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
+
+// 3. Create modal
+createWeb3Modal({
+  wagmiConfig: config,
+  projectId,
+  enableAnalytics: true, // Optional - defaults to your Cloud configuration
+  enableOnramp: true, // Optional - false as default
+});
 
 const container = document.getElementById('root');
 const root = ReactDOM.createRoot(container);
 
+export function Web3ModalProvider({ children }) {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </WagmiProvider>
+  );
+}
+
 root.render(
   <>
     <ColorModeScript />
-    <WagmiConfig config={wagmiConfig}>
-      <App />
-    </WagmiConfig>
-
-    <Web3Modal
-      projectId={projectId}
-      ethereumClient={ethereumClient}
-      themeVariables={{
-        '--w3m-font-family': 'Roboto, sans-serif',
-        '--w3m-background-color': '#7928CA',
-        '--w3m-accent-color': '#7928CA',
-        '--w3m-button-hover-highlight-border-radius': '6px',
-        '--w3m-button-border-radius': '6px',
-      }}
-    />
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </WagmiProvider>
   </>
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://cra.link/PWA
-serviceWorker.register();
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
