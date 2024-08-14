@@ -73,24 +73,24 @@ function LoggedInPage() {
     },
   ];
 
-  useEffect(() => {
-    const connectToLit = async () => {
-      const client = new LitJsSdk.LitNodeClient();
-      await client.connect();
-      return client;
-    };
-    connectToLit().then(async lc => {
-      setLitClient(lc);
+  // useEffect(() => {
+  //   const connectToLit = async () => {
+  //     const client = new LitJsSdk.LitNodeClient();
+  //     await client.connect();
+  //     return client;
+  //   };
+  //   connectToLit().then(async lc => {
+  //     setLitClient(lc);
 
-      if (window.ethereum) {
-        const sig = await LitJsSdk.checkAndSignAuthMessage({
-          chain,
-        });
+  //     if (window.ethereum) {
+  //       const sig = await LitJsSdk.checkAndSignAuthMessage({
+  //         chain,
+  //       });
 
-        setAuthSig(sig);
-      }
-    });
-  }, []);
+  //       setAuthSig(sig);
+  //     }
+  //   });
+  // }, []);
 
   const encryptWithLit = async msg => {
     const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(msg);
@@ -174,8 +174,11 @@ function LoggedInPage() {
 
   // need signer in order to create Polybase records
   const [addedSigner, setAddedSigner] = useState(false);
-  const [cards, setCards] = useState();
+  const [cards, setCards] = useState([]);
   const [filteredCards, setFilteredCards] = useState(cards);
+
+  console.log(address);
+  console.log(cards);
 
   const deleteRecord = async id => {
     const record = await polybaseDb
@@ -368,7 +371,7 @@ function LoggedInPage() {
 
   return (
     <>
-      <LoaderModal
+      {/* <LoaderModal
         open={polybaseLoading || polybaseRetrying}
         message={
           polybaseLoading
@@ -376,7 +379,7 @@ function LoggedInPage() {
             : 'Still polling Polybase, please sign again.'
         }
         tableData={current2fa}
-      />
+      /> */}
       {address && (
         <HStack justifyContent={'space-between'}>
           <div>

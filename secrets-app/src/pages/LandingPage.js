@@ -16,7 +16,7 @@ import ServiceCard from '../components/ServiceCard';
 import { imgProviderSrc } from '../ipfsHelpers';
 import { ipfsCids } from '../ipfsCids';
 
-// import { Web3Button } from '@web3modal/react';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { isBrowser } from 'react-device-detect';
 import { openInNewTab } from '../helper';
 import { getThemeData } from '../theme';
@@ -34,6 +34,8 @@ function LandingPage() {
     </a>
   );
   const themeData = getThemeData('default');
+  const { open, close } = useWeb3Modal();
+
   return (
     <>
       <Container>
@@ -71,7 +73,13 @@ function LandingPage() {
         </Text>
         <Center my={3}>
           {window.ethereum && (
-            <Button padding={'0'} my={2} background={'#7928CA'}>
+            <Button
+              // padding={'0'}
+              my={2}
+              background={'#7928CA'}
+              onClick={() => open()}
+            >
+              Connect
               {/* <Web3Button
                 icon="hide"
                 avatar="hide"

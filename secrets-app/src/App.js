@@ -19,7 +19,7 @@ const config = {
 };
 
 function App() {
-  const { isConnected } = useAccount();
+  const { address, isConnecting, isDisconnected, isConnected } = useAccount();
   return (
     <ChakraProvider theme={extendTheme({ config })}>
       <Box textAlign="center" fontSize="xl">

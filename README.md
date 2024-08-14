@@ -6,9 +6,7 @@ Check out the 👛 [Wallet OTP - EthGlobal Showcase Page](https://ethglobal.com/
 
 Wallet OTP app is live: https://wallet-otp.on.fleek.co
 
-
 ![Wallet OTP deck](https://github.com/oceans404/wallet-otp/assets/91382964/2dae553a-cd86-4cd4-94e0-3ef62b8cd6b6)
-
 
 ## Demo
 
@@ -22,9 +20,7 @@ Sign in with your wallet to encrypt and store your 2FA secrets for any web2 or w
 
 ## User Flow
 
-
 ![user flow](https://github.com/oceans404/wallet-otp/assets/91382964/55e55564-de37-4167-9cbf-25e05a533323)
-
 
 ---
 
@@ -34,7 +30,6 @@ Sign in with your wallet to encrypt and store your 2FA secrets for any web2 or w
 
 Wallet OTP encrypts your 2FA secret keys with your wallet's public key for maximum security. This means your 2FA keys are as safe as your crypto. [Here's a Wallet OTP encrypted 2FA record](https://testnet.polybase.xyz/v0/collections/pk%2F0x0a4f8fcf98d7e5745ed5911b7c6f864e92a0016539d9ed46221d1e378ceb1e2498fc2390ee81ab65fd6a6e9255d334bcbed14f25db92faf2c7c4e785181675dc%2FTestTokens%2FKeys/records/encrypted1686876767638) stored by "address":"0x61c4eF50cC6577CBb34744275c1bf7b7F111D5fD" from Wallet OTP. Notice how all fields (service, account, secret, plus corresponding symmetric keys for each field) are encrypted by Lit Protocol before being stored on Polybase decentralized storage. Even though the records are stored in public, no one can decrypt and view them except the person with signing capabilities for the 0x61c4eF50cC6577CBb34744275c1bf7b7F111D5fD address.
 
-
 ### 2. Free access from any device
 
 One time I got a new phone and lost access to all my social accounts because my 2FA access was tied to an authenticator that used local storage on my old phone that I'd already wiped. 😭😭😭😭😭
@@ -43,11 +38,9 @@ I touched so much grass that day! 🥲
 
 Wallet OTP is intentionally device agnostic and designed for multi-device use - you can access the Wallet OTP app on **any device** simply by connecting your wallet
 
-
 ### 3. Data availability
 
 Wallet OTP stores encrypted data on distributed, decentralized storage. With distributed, decentralized storage there's no way a Google or Twilio intern can accidentally drop the only table your encrypted keys live in, and no chance your encrypted keys are lost.
-
 
 ### 4. Data sovereignty
 
@@ -69,9 +62,7 @@ Wallet OTP is a wallet encrypted solution for 2FA secret storage so you no longe
 - CDN: **Filecoin Saturn**. I registered a custom service worker to provide fast content delivery of images **pinned on IPFS**
 - Decentralized static image storage: Pinned on **IPFS**, stored on **NFT.storage**
 - Website hosting: decentralized **on IPFS with Fleek**
-- Wallet OTP a special APE theme for any **Apecoin DAO** Members (stakers or holders of $APE) when they sign in to Wallet OTP
 
-  
 ## 🖥️ Web2 build details
 
 - Frontend: React with Chakra UI components
@@ -79,11 +70,8 @@ Wallet OTP is a wallet encrypted solution for 2FA secret storage so you no longe
 - Design and slides: Canva Pro
 - QR Libraries: react-qr-code & qr-scanner
 
-
 ## 📑 Papers read/referenced
 
 - TOTP: Time-Based One-Time Password Algorithm https://www.ietf.org/rfc/rfc6238.txt
 - What’s the Difference Between OTP, TOTP and HOTP? https://www.onelogin.com/learn/otp-totp-hotp
 - Symmetric key encryption: https://www.cryptomathic.com/news-events/blog/symmetric-key-encryption-why-where-and-how-its-used-in-banking
-
-
