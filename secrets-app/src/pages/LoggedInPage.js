@@ -16,7 +16,6 @@ import {
 import { isMobile } from 'react-device-detect';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { CopyIcon, CheckCircleIcon } from '@chakra-ui/icons';
-import * as LitJsSdk from '@lit-protocol/lit-node-client';
 
 import { createPublicClient, http } from 'viem';
 import { mainnet } from 'viem/chains';
@@ -92,78 +91,78 @@ function LoggedInPage() {
   //   });
   // }, []);
 
-  const encryptWithLit = async msg => {
-    const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(msg);
+  const encryptAndSave = async msg => {
+    // const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(msg);
 
-    const encryptedSymmetricKey = await litClient.saveEncryptionKey({
-      accessControlConditions: addressAccessControl(address),
-      symmetricKey,
-      authSig,
-      chain,
-    });
+    // const encryptedSymmetricKey = await litClient.saveEncryptionKey({
+    //   accessControlConditions: addressAccessControl(address),
+    //   symmetricKey,
+    //   authSig,
+    //   chain,
+    // });
 
-    const encryptedMessageStr = await LitJsSdk.blobToBase64String(
-      encryptedString
-    );
+    // const encryptedMessageStr = await LitJsSdk.blobToBase64String(
+    //   encryptedString
+    // );
 
-    const encryptedKeyStr = LitJsSdk.uint8arrayToString(
-      encryptedSymmetricKey,
-      'base16'
-    );
+    // const encryptedKeyStr = LitJsSdk.uint8arrayToString(
+    //   encryptedSymmetricKey,
+    //   'base16'
+    // );
 
     return {
-      encryptedString: encryptedMessageStr,
-      encryptedSymmetricKey: encryptedKeyStr,
+      encryptedString: msg,
+      encryptedSymmetricKey: msg,
     };
   };
 
-  const decryptRec = async rec => {
-    const { id, service, serviceKey, account, accountKey, secret, secretKey } =
-      rec;
-    return Promise.all([
-      id,
-      decryptWithLit(service, serviceKey),
-      decryptWithLit(account, accountKey),
-      decryptWithLit(secret, secretKey),
-    ]).then(([id, decryptedService, decryptedAccount, decryptedSecret]) => ({
-      id,
-      service: decryptedService,
-      account: decryptedAccount,
-      secret: decryptedSecret,
-    }));
-  };
+  // const decryptRec = async rec => {
+  //   const { id, service, serviceKey, account, accountKey, secret, secretKey } =
+  //     rec;
+  //   return Promise.all([
+  //     id,
+  //     decryptWithLit(service, serviceKey),
+  //     decryptWithLit(account, accountKey),
+  //     decryptWithLit(secret, secretKey),
+  //   ]).then(([id, decryptedService, decryptedAccount, decryptedSecret]) => ({
+  //     id,
+  //     service: decryptedService,
+  //     account: decryptedAccount,
+  //     secret: decryptedSecret,
+  //   }));
+  // };
 
-  const decryptPolybaseRecs = async recs => {
-    const decryptedPolybaseRecs = [];
-    for (let rec of recs) {
-      const dr = await decryptRec(rec);
-      decryptedPolybaseRecs.push(dr);
-    }
+  // const decryptPolybaseRecs = async recs => {
+  //   const decryptedPolybaseRecs = [];
+  //   for (let rec of recs) {
+  //     const dr = await decryptRec(rec);
+  //     decryptedPolybaseRecs.push(dr);
+  //   }
 
-    return decryptedPolybaseRecs;
-  };
+  //   return decryptedPolybaseRecs;
+  // };
 
-  const decryptWithLit = async (encryptedString, encryptedSymmetricKey) => {
-    if (litClient) {
-      const encryptedMessageBlob = await LitJsSdk.base64StringToBlob(
-        encryptedString
-      );
+  // const decryptWithLit = async (encryptedString, encryptedSymmetricKey) => {
+  //   if (litClient) {
+  //     const encryptedMessageBlob = await LitJsSdk.base64StringToBlob(
+  //       encryptedString
+  //     );
 
-      const symmetricKey = await litClient.getEncryptionKey({
-        accessControlConditions: addressAccessControl(address),
-        toDecrypt: encryptedSymmetricKey,
-        chain,
-        authSig,
-      });
+  //     const symmetricKey = await litClient.getEncryptionKey({
+  //       accessControlConditions: addressAccessControl(address),
+  //       toDecrypt: encryptedSymmetricKey,
+  //       chain,
+  //       authSig,
+  //     });
 
-      const decryptedMessage = await LitJsSdk.decryptString(
-        encryptedMessageBlob,
-        symmetricKey
-      );
+  //     const decryptedMessage = await LitJsSdk.decryptString(
+  //       encryptedMessageBlob,
+  //       symmetricKey
+  //     );
 
-      return decryptedMessage;
-    }
-  };
+  //     return decryptedMessage;
+  //   }
+  // };
 
   const [polybaseDb, setPolygbaseDb] = useState();
   const [defaultNamespace] = useState(
@@ -256,9 +255,11 @@ function LoggedInPage() {
   };
 
   const encryptAndSaveSecret = async ({ service, account, secret }) => {
-    const encryptedService = await encryptWithLit(service);
-    const encryptedAccount = await encryptWithLit(account);
-    const encryptedSecret = await encryptWithLit(secret);
+    console.log(service, account, secret);
+
+    const encryptedService = await encryptAndSave(service);
+    const encryptedAccount = await encryptAndSave(account);
+    const encryptedSecret = await encryptAndSave(secret);
 
     const full2fa = {
       service: {
@@ -277,11 +278,21 @@ function LoggedInPage() {
 
     setCurrent2fa(full2fa);
 
-    createPolybaseRecord(
-      { ...encryptedService, service },
-      { ...encryptedAccount, account },
-      { ...encryptedSecret, secret }
-    );
+    setCards(cards => [
+      {
+        id: secret,
+        service: service,
+        account: account,
+        secret: secret,
+      },
+      ...cards,
+    ]);
+
+    // createPolybaseRecord(
+    //   { ...encryptedService, service },
+    //   { ...encryptedAccount, account },
+    //   { ...encryptedSecret, secret }
+    // );
   };
 
   useEffect(() => {
@@ -334,44 +345,46 @@ function LoggedInPage() {
     }
   }, [isConnected, address]);
 
-  useEffect(() => {
-    if (polybaseDb && addedSigner && litClient && authSig) {
-      const getEncryptedDataFromPolybase = async () => {
-        const records = await listRecordsWhereAppIdMatches();
-        await timeout(1000);
-        return records;
-      };
-      getEncryptedDataFromPolybase().then(async recs => {
-        await decryptPolybaseRecs(recs).then(decryptedRecs => {
-          const serviceSortedRecs =
-            decryptedRecs &&
-            decryptedRecs.sort((a, b) => {
-              // if same service, alphabetize by account
-              if (a.service.toLowerCase() === b.service.toLowerCase()) {
-                return a.account.toLowerCase() > b.account.toLowerCase()
-                  ? 1
-                  : -1;
-              } else {
-                // alphabetize by service
-                return a.service.toLowerCase() > b.service.toLowerCase()
-                  ? 1
-                  : -1;
-              }
-            });
-          setCards(serviceSortedRecs);
-        });
-      });
-    }
-  }, [addedSigner, litClient, authSig, polybaseDb]);
+  // useEffect(() => {
+  //   if (polybaseDb && addedSigner && litClient && authSig) {
+  //     const getEncryptedDataFromPolybase = async () => {
+  //       const records = await listRecordsWhereAppIdMatches();
+  //       await timeout(1000);
+  //       return records;
+  //     };
+  //     getEncryptedDataFromPolybase().then(async recs => {
+  //       await decryptPolybaseRecs(recs).then(decryptedRecs => {
+  //         const serviceSortedRecs =
+  //           decryptedRecs &&
+  //           decryptedRecs.sort((a, b) => {
+  //             // if same service, alphabetize by account
+  //             if (a.service.toLowerCase() === b.service.toLowerCase()) {
+  //               return a.account.toLowerCase() > b.account.toLowerCase()
+  //                 ? 1
+  //                 : -1;
+  //             } else {
+  //               // alphabetize by service
+  //               return a.service.toLowerCase() > b.service.toLowerCase()
+  //                 ? 1
+  //                 : -1;
+  //             }
+  //           });
+  //         setCards(serviceSortedRecs);
+  //       });
+  //     });
+  //   }
+  // }, [addedSigner, litClient, authSig, polybaseDb]);
 
   const shortAddress = addr => `${addr.slice(0, 5)}...${addr.slice(-4)}`;
   const encodedNamespaceDb = encodeURIComponent(
     `${defaultNamespace}/${collectionReference}`
   );
 
+  console.log(current2fa);
+
   return (
     <>
-      {/* <LoaderModal
+      <LoaderModal
         open={polybaseLoading || polybaseRetrying}
         message={
           polybaseLoading
@@ -379,7 +392,7 @@ function LoggedInPage() {
             : 'Still polling Polybase, please sign again.'
         }
         tableData={current2fa}
-      /> */}
+      />
       {address && (
         <HStack justifyContent={'space-between'}>
           <div>

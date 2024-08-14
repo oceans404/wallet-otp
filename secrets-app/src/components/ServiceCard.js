@@ -36,8 +36,11 @@ function ServiceCard({
   );
   useEffect(() => {
     const getCode = async () => {
-      const formattedToken = authenticator.generateToken(secret);
-      setCode(formattedToken);
+      if (secret) {
+        const formattedToken = authenticator.generateToken(secret);
+        console.log(formattedToken);
+        setCode(formattedToken);
+      }
     };
 
     const interval = setInterval(() => {
