@@ -7,6 +7,7 @@ import {
   Button,
   VStack,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { CopyIcon, ExternalLinkIcon } from '@chakra-ui/icons';
@@ -75,6 +76,7 @@ function ServiceCard({
         <div>
           {service}: {account}
         </div>
+
         <CopyToClipboard text={code}>
           <Center marginTop={5} style={{ cursor: 'pointer' }}>
             <CountdownCircleTimer
@@ -85,14 +87,17 @@ function ServiceCard({
               size={150}
             >
               {({ remainingTime }) => (
-                <VStack gap={0}>
-                  <Text fontSize={'24px'} color={textHighlight} m={0} p={0}>
-                    <strong>{spaceOutCode(code)}</strong>
-                  </Text>
-                  <Text color={''} fontSize={'13px'} m={0} p={0}>
-                    <CopyIcon /> Copy OTP
-                  </Text>
-                </VStack>
+                <Tooltip label="Click to copy OTP">
+                  <VStack gap={0}>
+                    <Text fontSize={'24px'} color={textHighlight} m={0} p={0}>
+                      <strong>{spaceOutCode(code)}</strong>
+                    </Text>
+
+                    <Text color={''} fontSize={'13px'} m={0} p={0}>
+                      <CopyIcon /> Copy OTP
+                    </Text>
+                  </VStack>
+                </Tooltip>
               )}
             </CountdownCircleTimer>
           </Center>

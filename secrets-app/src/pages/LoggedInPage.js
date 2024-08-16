@@ -11,6 +11,7 @@ import {
   Wrap,
   WrapItem,
   useMediaQuery,
+  useColorMode,
 } from '@chakra-ui/react';
 
 import { isMobile } from 'react-device-detect';
@@ -49,6 +50,7 @@ function LoggedInPage() {
   const [ensAvatar, setEnsAvatar] = useState();
   const [theme, setTheme] = useState('default');
   const [themeData, setThemeData] = useState(getThemeData(theme));
+  const { colorMode } = useColorMode();
 
   const [isLargerThan700] = useMediaQuery('(min-width: 700px)');
 
@@ -396,13 +398,8 @@ function LoggedInPage() {
       {address && (
         <HStack justifyContent={'space-between'}>
           <div>
-            <Text
-              bgGradient={`linear(to-l, ${themeData.color2}, ${themeData.color1})`}
-              bgClip="text"
-              fontSize="4xl"
-              fontWeight="bold"
-            >
-              Wallet OTP
+            <Text fontSize="4xl" fontWeight="bold">
+              Wally
             </Text>
           </div>
 
@@ -426,10 +423,11 @@ function LoggedInPage() {
                   boxSize={isMobile ? '80px' : '100px'}
                   // if the user has an ENS with a set avatar, the pfp is their avatar
                   src={ensAvatar}
-                  fallbackSrc={imgProviderSrc(
-                    isMobile,
-                    themeData.fallbackPfpIpfsCid
-                  )}
+                  fallbackSrc={
+                    colorMode === 'light'
+                      ? 'https://as2.ftcdn.net/v2/jpg/01/90/74/49/1000_F_190744965_u5p6x9ag9DbTects93UV3KLKVxqMLRD6.jpg'
+                      : 'https://img.freepik.com/free-photo/pixelated-background-with-blue-shades_23-2149701487.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1722729600&semt=ais_hybrid'
+                  }
                   marginRight={isMobile ? 2 : 4}
                 />
               </a>
@@ -437,13 +435,13 @@ function LoggedInPage() {
               <VStack style={{ textAlign: 'left', alignItems: 'flex-start' }}>
                 <Text>
                   <strong>
-                    gm{' '}
+                    hi{' '}
                     {ensName ? (
                       <a href={ensProfile} target="_blank">
                         {ensName}
                       </a>
                     ) : (
-                      'anon'
+                      'friend'
                     )}{' '}
                   </strong>
                 </Text>
@@ -452,8 +450,6 @@ function LoggedInPage() {
                   <CopyToClipboard text={address}>
                     <span
                       style={{
-                        color: 'rgba(255, 255, 255, 0.25)',
-                        marginLeft: '5px',
                         cursor: 'pointer',
                       }}
                     >
@@ -482,15 +478,15 @@ function LoggedInPage() {
 
       {cards && cards.length == 0 && (
         <Text textAlign="left">
-          Get started with Wallet OTP by adding your first 2FA secret. Need
-          help?{' '}
+          Get started with Wally by adding your first 2FA secret.
+          {/* Need help?{' '}
           <a
             style={{ textDecoration: 'underline' }}
             target="_blank"
             href="https://www.notion.so/oceans404/How-to-add-2FA-codes-from-your-web2-and-web3-apps-to-the-Wallet-OTP-Authenticator-App-3152a69aa47e4f02ab347c60006bd9be?pvs=4"
           >
             Read the docs
-          </a>
+          </a> */}
         </Text>
       )}
       {/* Returning user with secrets*/}

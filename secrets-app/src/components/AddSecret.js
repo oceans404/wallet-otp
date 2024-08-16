@@ -11,8 +11,6 @@ import {
   useDisclosure,
   Input,
   Text,
-  Container,
-  Center,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { AddIcon } from '@chakra-ui/icons';
@@ -119,7 +117,7 @@ function AddSecret({ saveSecret, themeData }) {
 
   return (
     <>
-      <Button onClick={onOpen} background={themeData.button}>
+      <Button onClick={onOpen}>
         <AddIcon marginRight={2} /> {isMobile ? '2FA' : title}
       </Button>
 
@@ -128,7 +126,6 @@ function AddSecret({ saveSecret, themeData }) {
         <ModalContent>
           <ModalHeader>
             <Text>Add a new {title}</Text>
-            {helpDocs}
           </ModalHeader>
           <ModalCloseButton />
           {secretGetVia === GET_SECRET_VIA.UNDECIDED ? (
@@ -137,7 +134,6 @@ function AddSecret({ saveSecret, themeData }) {
                 <h1>How do you want to add your 2FA secret?</h1>
               </ModalBody>
               <ModalFooter justifyContent={'space-evenly'}>
-                {/* <Center> */}
                 <Button
                   onClick={() => {
                     setSecretGetVia(GET_SECRET_VIA.QR);
@@ -149,7 +145,6 @@ function AddSecret({ saveSecret, themeData }) {
                 <Button onClick={() => setSecretGetVia(GET_SECRET_VIA.TEXT)}>
                   Enter a setup key
                 </Button>
-                {/* </Center> */}
               </ModalFooter>
             </>
           ) : secretGetVia === GET_SECRET_VIA.TEXT ? (
@@ -190,11 +185,7 @@ function AddSecret({ saveSecret, themeData }) {
 
               <ModalFooter>
                 <Button onClick={() => resetSecretGetVia()}>Back</Button>
-                <Button
-                  background={themeData.button}
-                  marginLeft={4}
-                  onClick={handleSubmit(onSubmit)}
-                >
+                <Button marginLeft={4} onClick={handleSubmit(onSubmit)}>
                   Encrypt and save
                 </Button>
               </ModalFooter>

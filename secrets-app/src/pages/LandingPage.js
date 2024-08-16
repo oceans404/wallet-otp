@@ -8,6 +8,7 @@ import {
   HStack,
   Wrap,
   WrapItem,
+  useColorMode,
 } from '@chakra-ui/react';
 import QRCode from 'react-qr-code';
 import { isMobile } from 'react-device-detect';
@@ -33,58 +34,25 @@ function LandingPage() {
       />
     </a>
   );
-  const themeData = getThemeData('default');
+
   const { open, close } = useWeb3Modal();
+  const { colorMode, toggleColorMode } = useColorMode();
+  const themeData =
+    colorMode === 'light' ? getThemeData('brat') : getThemeData('demure');
 
   return (
     <>
       <Container>
-        <Text
-          bgGradient={`linear(to-l, ${themeData.color2}, ${themeData.color1})`}
-          bgClip="text"
-          fontSize="5xl"
-          fontWeight="bold"
-          marginTop={2}
-        >
-          Wallet OTP
+        <Text fontSize="5xl" fontWeight="bold">
+          Wally
         </Text>
-
         <Text fontSize="large" fontWeight="bold">
-          is a decentralized, wallet encrypted, 2FA storage solution
-        </Text>
-        <br></br>
-        <Text fontSize={'12px'}>
-          Two-factor authentication (2FA) adds an additional layer of protection
-          beyond passwords to your web2 and web3 accounts. Wallet OTP is{' '}
-          <a
-            href="https://github.com/oceans404/wallet-otp"
-            target="_blank"
-            style={{ textDecoration: 'underline' }}
-          >
-            a free and completely open source public good
-          </a>{' '}
-          that protects all your accounts by encrypting your 2FA secrets with
-          your Wallet's public key before storing on decentralized storage.
-          <br />
-          When you need 2FA, Wallet OTP generates new dynamic 6 digit OTPs (one
-          time passwords) every 30 seconds. That way, you and only you can use
-          Wallet OTP to log in to accounts across the web. Sign in to use Wallet
-          OTP ⬇️
+          is your favorite new auth app
         </Text>
         <Center my={3}>
           {window.ethereum && (
-            <Button
-              // padding={'0'}
-              my={2}
-              background={'#7928CA'}
-              onClick={() => open()}
-            >
-              Connect
-              {/* <Web3Button
-                icon="hide"
-                avatar="hide"
-                label="Sign in with your wallet"
-              /> */}
+            <Button my={2} onClick={() => open()}>
+              Get started
             </Button>
           )}
           {!window.ethereum && (
@@ -115,51 +83,19 @@ function LandingPage() {
             </VStack>
           )}
         </Center>
-
-        <Center>
-          <VStack>
-            <Text
-              bgGradient={`linear(to-l, ${themeData.color2}, ${themeData.color1})`}
-              bgClip="text"
-              fontSize={'14px'}
-            >
-              Wallet OTP has a decentralized stack powered by
-            </Text>
-            {/* <HStack>
-              <Wrap justify={'space-evenly'}>
-                {logo(ipfsCids.ens, 'https://ens.domains/')}
-                {logo(ipfsCids.lit, 'https://litprotocol.com/')}
-                {logo(ipfsCids.polybase, 'https://polybase.xyz/')}
-                {logo(ipfsCids.fleek, 'https://fleek.co/')}
-                {logo(ipfsCids.nftstorage, 'https://nft.storage/')}
-                {logo(ipfsCids.ipfs, 'https://ipfs.tech/')}
-                {logo(ipfsCids.saturn, 'https://saturn.tech/')}
-              </Wrap>
-            </HStack> */}
-          </VStack>
-        </Center>
-        <br></br>
       </Container>
       <hr></hr>
       <br></br>
 
       <div>
-        <Text
-          bgGradient={`linear(to-l, ${themeData.color2}, ${themeData.color1})`}
-          bgClip="text"
-          fontSize="2xl"
-          fontWeight="bold"
-          textAlign={'left'}
-        >
-          Wallet OTP in action with demo accounts & secrets
+        <Text fontSize="2xl" fontWeight="bold" textAlign={'left'}>
+          Demo
         </Text>
         <Text fontSize={'12px'} textAlign={'left'}>
-          This is a demo to show Wallet OTP in action in case you want to check
-          out the experience before signing in with your wallet. Don't worry,
-          the demo uses test accounts and test secrets. Want to test whether
-          Wallet OTP's one time passwords actually work? Add these demo 2FA
-          secrets to your Authy or Google Authenticator app. The Wallet OTP
-          dynamically generated OTPs match OTPs from any other service. 👯‍♀️
+          Here's how Wally works: your social accounts give you a 2FA secret.
+          Set and forget the secrets in Wally. Use Wally from any device, any
+          time to find your dynamically generated OTPs (6 digit codes) to help
+          you log in to your socials.
         </Text>
       </div>
       <br></br>

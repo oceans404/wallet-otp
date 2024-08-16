@@ -11,6 +11,7 @@
     "@polybase/client": "^0.6.6",
     "@polybase/eth": "^0.6.6",
     "@tanstack/react-query": "^5.51.23",
+    "@web3modal/siwe": "^5.1.0",
     "@web3modal/wagmi": "^5.0.11",
     "authenticator": "^1.1.5",
     "dotenv": "^16.4.5",
@@ -32,6 +33,9 @@
     "web-vitals": "^4.2.3"
   },
   "devDependencies": {
+    "@nillion/client-core": "^0.1.0-rc.8",
+    "@nillion/client-react-hooks": "^0.1.0-rc.8",
+    "@nillion/client-vms": "^0.1.0-rc.8",
     "ajv": "^8.17.1",
     "assert": "^2.0.0",
     "buffer": "^6.0.3",

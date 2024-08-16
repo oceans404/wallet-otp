@@ -1,4 +1,4 @@
-# Wallet OTP Frontend
+# Wally Frontend
 
 I bootstrapped this with Create-React-App
 

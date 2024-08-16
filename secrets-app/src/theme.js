@@ -1,12 +1,18 @@
 import { ipfsCids } from './ipfsCids';
 
 const colorTheme = {
-  default: {
-    color1: '#FF0080',
-    color2: '#7928CA',
+  brat: {
+    color1: '#89CC04',
+    color2: 'black',
     text: '#ffffff',
-    textHighlight: '#FF0080',
-    button: '#7928CA',
+    textHighlight: '#89CC04',
+    fallbackPfpIpfsCid: ipfsCids.walletOtpPfp,
+  },
+  demure: {
+    color1: '#ADD8E6',
+    color2: '#00008B',
+    text: '#ffffff',
+    textHighlight: '#ADD8E6',
     fallbackPfpIpfsCid: ipfsCids.walletOtpPfp,
   },
 };
